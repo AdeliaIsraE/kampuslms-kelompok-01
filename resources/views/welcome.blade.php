@@ -8,8 +8,6 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700" rel="stylesheet" />
 
-        <script src="https://cdn.tailwindcss.com"></script>
-
         {{-- Style halaman login dipisah ke resources/css/welcome.css --}}
         @vite(['resources/css/welcome.css'])
     </head>
