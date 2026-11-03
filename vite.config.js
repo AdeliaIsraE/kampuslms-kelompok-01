@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     plugins: [
@@ -12,6 +13,8 @@ export default defineConfig({
                 'resources/css/dashboard/admin.css',
                 'resources/css/dashboard/dosen-mahasiswa.css',
                 'resources/css/dashboard/task-panel.css',
+                'resources/css/dashboard/notifikasi.css',
+                'resources/css/dashboard/nilai.css',
                 'resources/css/components/courses.css',
                 'resources/css/components/buttons.css',
                 'resources/css/courses/materials.css',
@@ -26,5 +29,6 @@ export default defineConfig({
             ],
             refresh: true,
         }),
+        tailwindcss(),
     ],
 });
