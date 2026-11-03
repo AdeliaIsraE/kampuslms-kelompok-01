@@ -1,17 +1,17 @@
 # Performa KampusLMS
 
 **Kondisi uji:** seeder penuh (30 mahasiswa, 140 submission), lokal, Debugbar.
-**Tanggal ukur sebelum:** 3 November 2026  |  **Tanggal ukur sesudah:** 3 November 2026
+**Tanggal ukur sebelum:** 3 November 2026  |  **Tanggal ukur sesudah:** 4 November 2026
 
 | Halaman | Query sebelum | Query sesudah | Waktu sebelum (ms) | Waktu sesudah (ms) | Memori sebelum | Memori sesudah |
 |---|---|---|---|---|---|---|
-| Daftar mata kuliah | 7 Queries | | 1.100 ms | | 25mb | |
-| Detail mata kuliah | 10 Queries | | 1.140 ms | | 25mb | |
-| Daftar tugas | 8 Queries | | 1.150 ms | | 25mb | |
-| Daftar pengumpulan (dosen) | 10 Queries | | 1.130 ms | | 25mb | |
-| **Rekap nilai** | 7 Queries | | 515 ms | | 26mb | |
-| Dashboard mahasiswa | 5 Queries | | 465 ms | | 25mb | |
-| Dashboard dosen | 11 Queries | | 522 ms | | 26mb | |
+| Daftar mata kuliah | 7 Queries | 7 QUeries | 1.100ms | 1.780ms | 25mb | 25mb |
+| Detail mata kuliah | 10 Queries | 9 Queries | 1.140ms | 2.200ms | 25mb | 26mb |
+| Daftar tugas | 8 Queries | 8 Queries | 1.150ms | 1.450ms | 25mb | 25mb |
+| Daftar pengumpulan (dosen) | 10 Queries | 10 Queries | 1.130ms | 2.070ms | 25mb | 25mb |
+| **Rekap nilai** | 7 Queries | 7 Queries | 515ms | 1.590ms | 26mb | 26mb |
+| Dashboard mahasiswa | 5 Queries | 5 Queries | 465ms | 1.760ms | 25mb | 25mb |
+| Dashboard dosen | 11 Queries | 12 Queries | 522ms | 1.050ms | 26mb | 25mb |
 
 **Halaman terburuk:** Detail mata kuliah (diukur sebagai dosen).
 
@@ -44,3 +44,18 @@ seeder penuh. Hasil: tidak ditemukan pelanggaran (tidak ada lazy loading
 pada koleksi). Relasi yang diakses di view sudah dimuat lewat
 `with()` / `withCount()`.
 
+## Bagian yang Sengaja Tidak Di-cache
+
+Selain menerapkan cache pada statistik dashboard admin, beberapa bagian aplikasi sengaja tidak menggunakan cache agar informasi yang ditampilkan tetap sesuai dengan kondisi terbaru dan kebutuhan setiap pengguna.
+
+| Bagian | Alasan Tidak Di-cache |
+|---|---|
+| Ringkasan mata kuliah pada dashboard admin | Menggunakan pagination, sehingga data perlu menyesuaikan halaman yang sedang dibuka. |
+| Dashboard mahasiswa | Menampilkan informasi mata kuliah dan aktivitas berdasarkan akun mahasiswa yang sedang login. |
+| Dashboard dosen | Menampilkan informasi yang berkaitan dengan mata kuliah dan tugas yang dikelola oleh dosen tersebut. |
+| Daftar dan detail mata kuliah | Data dapat berubah ketika mata kuliah diperbarui atau mahasiswa melakukan enrollment. |
+| Daftar tugas dan pengumpulan | Informasi tugas serta status pengumpulan dapat berubah sewaktu-waktu, sehingga perlu menampilkan kondisi terbaru. |
+| Rekap nilai | Nilai dan umpan balik dapat berubah setelah dosen melakukan penilaian atau pembaruan. |
+| Notifikasi | Jumlah notifikasi yang belum dibaca dan status keterbacaannya dapat berubah ketika pengguna menerima atau membaca notifikasi. |
+
+Keputusan tersebut dilakukan agar aplikasi tidak menampilkan data yang sudah tidak sesuai, terutama pada bagian yang berkaitan dengan aktivitas pengguna dan perubahan data secara langsung. Dengan demikian, cache difokuskan pada statistik dashboard admin yang cenderung sering diminta tetapi tidak harus selalu dihitung ulang setiap kali halaman dibuka.
