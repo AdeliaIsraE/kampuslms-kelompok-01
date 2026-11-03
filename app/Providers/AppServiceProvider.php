@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Minggu 11: lazy loading (potensi N+1) menjadi exception di lingkungan
         // non-produksi. Di produksi tetap berjalan agar pengguna tidak melihat
-        // halaman rusak.
+        // halaman rusak..
         Model::preventLazyLoading(! $this->app->isProduction());
 
         // 429 dalam JSON lengkap dengan header Retry-After
