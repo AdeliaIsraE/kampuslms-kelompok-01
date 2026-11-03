@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\AdminDashboardCache;
 use App\Support\FileSize;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,8 +16,7 @@ class Submission extends Model
     use HasFactory;
 
     /**
-     * Path berkas yang dihapus setelah baris terhapus. Diisi saat event `deleting`,
-     * karena saat `deleted` baris revisinya sudah hilang oleh cascade di database.
+     * Path berkas yang dihapus setelah baris terhapus.
      */
     protected array $filesToDelete = [];
 
@@ -32,17 +32,22 @@ class Submission extends Model
     ];
 
     /**
-     * Hapus berkas fisik (versi terbaru + seluruh revisi) saat satu baris submission
-     * dihapus lewat Eloquent ($submission->delete()). Berkas dihapus SETELAH database
-     * berhasil, supaya kegagalan hapus tidak membuat baris kehilangan berkasnya.
-     *
-     * TIDAK terpicu pada penghapusan massal dan pada cascadeOnDelete di level database
-     * (hapus tugas / hapus mata kuliah). Untuk kasus itu, Assignment::booted (hapus tugas)
-     * dan Course::booted (hapus mata kuliah) menghapus folder submissions/{assignment_id},
-     * yang juga memuat berkas semua revisi.
+     * Mengatur invalidasi cache dan penghapusan berkas fisik.
      */
     protected static function booted(): void
     {
+        // Submission baru dibuat.
+        static::created(function (Submission $submission) {
+            AdminDashboardCache::forget();
+        });
+
+        // Waktu pengumpulan berubah, misalnya saat mahasiswa mengumpulkan ulang.
+        static::updated(function (Submission $submission) {
+            if ($submission->wasChanged('submitted_at')) {
+                AdminDashboardCache::forget();
+            }
+        });
+
         static::deleting(function (Submission $submission) {
             $submission->filesToDelete = $submission->revisions()
                 ->pluck('file_path')
@@ -54,6 +59,8 @@ class Submission extends Model
         });
 
         static::deleted(function (Submission $submission) {
+            AdminDashboardCache::forget();
+
             if ($submission->filesToDelete !== []) {
                 Storage::disk('local')->delete($submission->filesToDelete);
             }

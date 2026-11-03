@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Support\AdminDashboardCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -12,9 +13,6 @@ class CourseEnrollmentController extends Controller
     /**
      * POST /{admin|dosen}/mata-kuliah/{mata_kuliah}/mahasiswa
      * Memasukkan satu atau banyak mahasiswa ke mata kuliah.
-     *
-     * Otorisasi: CoursePolicy::manageEnrollment -> admin, atau dosen
-     * pengampu MK ini. Dosen lain mendapat 403.
      */
     public function store(Request $request, Course $mata_kuliah)
     {
@@ -25,7 +23,6 @@ class CourseEnrollmentController extends Controller
             'student_ids.*' => [
                 'integer',
                 'distinct',
-                // Harus user ber-role mahasiswa yang belum dihapus (soft delete).
                 Rule::exists('users', 'id')->where('role', 'mahasiswa')->whereNull('deleted_at'),
             ],
         ], [
@@ -38,9 +35,7 @@ class CourseEnrollmentController extends Controller
 
         $ids = collect($data['student_ids'])->map(fn ($id) => (int) $id)->unique()->values();
 
-        // Pisahkan yang sudah terdaftar. Hanya yang BARU yang di-attach, supaya
-        // enrolled_at mahasiswa lama tidak tertimpa. (syncWithoutDetaching yang
-        // diberi atribut pivot akan meng-update baris yang sudah ada.)
+        // Pisahkan mahasiswa yang sudah terdaftar.
         $alreadyEnrolled = $mata_kuliah->students()
             ->whereIn('users.id', $ids)
             ->pluck('users.id');
@@ -51,6 +46,9 @@ class CourseEnrollmentController extends Controller
             $mata_kuliah->students()->attach(
                 $newIds->mapWithKeys(fn ($id) => [$id => ['enrolled_at' => now()]])->all()
             );
+
+            // Hapus cache karena jumlah mahasiswa pada mata kuliah berubah.
+            AdminDashboardCache::forget();
         }
 
         $added = $newIds->count();
@@ -73,6 +71,11 @@ class CourseEnrollmentController extends Controller
         // detach() mengembalikan jumlah baris pivot yang terhapus.
         $removed = $mata_kuliah->students()->detach($student);
 
+        if ($removed > 0) {
+            // Hapus cache karena jumlah mahasiswa pada mata kuliah berubah.
+            AdminDashboardCache::forget();
+        }
+
         return redirect()
             ->route($this->routePrefix($request) . '.show', $mata_kuliah)
             ->with(
@@ -84,9 +87,7 @@ class CourseEnrollmentController extends Controller
     }
 
     /**
-     * Prefix nama route sesuai peran: 'admin.mata-kuliah' atau 'dosen.mata-kuliah'.
-     * Aman karena route hanya dapat dicapai oleh admin/dosen (middleware role
-     * + Gate di atas), jadi role di sini tidak pernah 'mahasiswa'.
+     * Prefix nama route sesuai peran.
      */
     private function routePrefix(Request $request): string
     {

@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
     {
         // Kata sandi demo: default "password" untuk lokal/CI.
         // WAJIB diganti di produksi lewat env DEMO_PASSWORD saat deployment.
-        $demoPassword = env('DEMO_PASSWORD', 'password');
-
+        $demoPassword = config('demo.password');
+        
         // Izinkan mass assignment (role, nim_nip) selama seeding saja.
         User::unguard();
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\AdminDashboardCache;
 use App\Support\FileSize;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +22,19 @@ class Material extends Model
         'mime_type',
         'external_url',
     ];
+
+    protected static function booted(): void
+    {
+        // Materi baru ditambahkan.
+        static::created(function (Material $material) {
+            AdminDashboardCache::forget();
+        });
+
+        // Materi dihapus.
+        static::deleted(function (Material $material) {
+            AdminDashboardCache::forget();
+        });
+    }
 
     public function course(): BelongsTo
     {
@@ -45,8 +59,6 @@ class Material extends Model
      * Tautan untuk pengguna:
      *  - type=link : tautan luar apa adanya
      *  - type=file : route unduh (materi.unduh) yang memeriksa hak akses.
-     *                Berkas disimpan di disk privat, jadi TIDAK ada URL
-     *                langsung ke berkasnya.
      */
     public function getUrlAttribute(): ?string
     {
