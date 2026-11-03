@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Minggu 11: lazy loading (potensi N+1) menjadi exception di lingkungan
+        // non-produksi. Di produksi tetap berjalan agar pengguna tidak melihat
+        // halaman rusak..
+        Model::preventLazyLoading(! $this->app->isProduction());
+
         // 429 dalam JSON lengkap dengan header Retry-After
         $tooMany = fn (string $pesan) => function (Request $request, array $headers) use ($pesan) {
             return response()->json(['message' => $pesan], 429, $headers);
