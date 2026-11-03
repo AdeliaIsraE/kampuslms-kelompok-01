@@ -84,7 +84,7 @@
                     @if (Route::has($routePrefix . '.materi.index'))
                         <a href="{{ route($routePrefix . '.materi.index', $mataKuliah) }}" class="mk-shortcut">
                             <span class="mk-shortcut-title">Materi</span>
-                            <span class="mk-shortcut-count">{{ $mataKuliah->materials()->count() }} materi</span>
+                            <span class="mk-shortcut-count">{{ $mataKuliah->materials_count }} materi</span>
                         </a>
                     @endif
 
@@ -93,8 +93,8 @@
                             <span class="mk-shortcut-title">Tugas</span>
                             <span class="mk-shortcut-count">
                                 {{ $user->role === 'mahasiswa'
-                                    ? $mataKuliah->assignments()->where('status', 'published')->count()
-                                    : $mataKuliah->assignments()->count() }} tugas
+                                    ? $mataKuliah->published_assignments_count
+                                    : $mataKuliah->assignments_count }} tugas
                             </span>
                         </a>
                     @endif

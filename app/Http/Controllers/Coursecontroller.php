@@ -99,6 +99,12 @@ class CourseController extends Controller
     {
         Gate::authorize('view', $mata_kuliah);
 
+        $mata_kuliah->loadMissing('lecturer')->loadCount([
+        'materials',
+        'assignments',
+        'assignments as published_assignments_count' => fn ($q) => $q->where('status', 'published'),
+    ]);
+
         $routePrefix = $this->routePrefix($request);
 
         $data = [
