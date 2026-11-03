@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Events\TugasDipublikasikan;
-use App\Support\FileSize;
+use App\Support\AdminDashboardCache;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -41,22 +41,11 @@ class Assignment extends Model
     ];
 
     /**
-     * Bersihkan berkas fisik saat tugas dihapus: lampiran soal + seluruh folder
-     * submissions/{id}, yang juga memuat berkas semua revisi.
-     *
-     * Baris submissions dan submission_revisions terhapus oleh cascade di DATABASE,
-     * yang tidak memicu event model, jadi pembersihannya dilakukan di sini.
-     * Ditulis di model (bukan di controller) supaya web, API, dan tinker berperilaku
-     * sama. `deleted` hanya terpicu bila baris BERHASIL dihapus; kalau penghapusan
-     * di database gagal, berkasnya tetap utuh.
+     * Bersihkan berkas fisik saat tugas dihapus.
      */
     protected static function booted(): void
     {
-        // Tugas baru terbit: dibuat langsung berstatus published, atau berubah dari
-        // draft ke published. Mengubah tugas yang sudah published (judul, batas waktu,
-        // dst.) TIDAK memicu event, jadi mahasiswa tidak dinotifikasi berulang.
-        // Ditulis di model agar web, API, dan tinker sama. Untuk mematikannya saat
-        // seeding: Assignment::withoutEvents(fn () => ...).
+        // Tugas baru terbit atau berubah dari draft menjadi published.
         static::saved(function (Assignment $assignment) {
             if ($assignment->status === 'published'
                 && ($assignment->wasRecentlyCreated || $assignment->wasChanged('status'))) {
@@ -64,7 +53,21 @@ class Assignment extends Model
             }
         });
 
+        // Invalidasi cache ketika tugas dibuat.
+        static::created(function (Assignment $assignment) {
+            AdminDashboardCache::forget();
+        });
+
+        // Invalidasi cache ketika status tugas berubah.
+        static::updated(function (Assignment $assignment) {
+            if ($assignment->wasChanged('status')) {
+                AdminDashboardCache::forget();
+            }
+        });
+
         static::deleted(function (Assignment $assignment) {
+            AdminDashboardCache::forget();
+
             $disk = Storage::disk('local');
 
             if ($assignment->file_path) {
@@ -99,12 +102,6 @@ class Assignment extends Model
         return $this->hasManyThrough(Grade::class, Submission::class);
     }
 
-    /**
-     * Apakah tugas ini menerima pengumpulan pada waktu $at?
-     * Ya bila tanpa deadline, belum lewat deadline, atau keterlambatan diizinkan.
-     * Satu-satunya tempat aturan ini ditulis; dipakai AssignmentPolicy::submit
-     * sehingga web dan API otomatis sama.
-     */
     public function acceptsSubmissionsAt(CarbonInterface $at): bool
     {
         return $this->due_at === null
@@ -112,17 +109,11 @@ class Assignment extends Model
             || $this->allow_late;
     }
 
-    /** Apakah pengumpulan pada waktu $at ditandai terlambat (is_late)? */
     public function isLateAt(CarbonInterface $at): bool
     {
         return $this->due_at !== null && $at->gt($this->due_at);
     }
 
-    /**
-     * Tautan unduh lampiran soal (null kalau dosen tidak melampirkan berkas).
-     * Berkas disimpan di disk privat, jadi TIDAK ada URL langsung ke berkasnya:
-     * tautan ini mengarah ke route tugas.lampiran yang memeriksa hak akses.
-     */
     public function getAttachmentUrlAttribute(): ?string
     {
         return $this->file_path
@@ -130,10 +121,6 @@ class Assignment extends Model
             : null;
     }
 
-    /**
-     * Ukuran lampiran soal dalam teks yang terbaca manusia ("1,5 MB").
-     * null bila tugas tidak punya lampiran.
-     */
     public function getFileSizeHumanAttribute(): ?string
     {
         return FileSize::format($this->file_size);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\AdminDashboardCache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,16 +28,18 @@ class Course extends Model
     protected array $directoriesToDelete = [];
 
     /**
-     * Bersihkan berkas fisik saat mata kuliah dihapus: materials/{id},
-     * assignments/{id}, dan submissions/{id tiap tugas}.
-     *
-     * Materi, tugas, dan submission terhapus oleh cascade di DATABASE (tanpa event
-     * model). Lokasi berkas dikumpulkan di `deleting`, SEBELUM baris hilang, karena
-     * setelah cascade id tugasnya tidak bisa dicari lagi. Folder baru dihapus di
-     * `deleted`, yaitu hanya bila baris berhasil dihapus.
+     * Bersihkan berkas fisik saat mata kuliah dihapus.
      */
     protected static function booted(): void
     {
+        static::created(function (Course $course) {
+            AdminDashboardCache::forget();
+        });
+
+        static::updated(function (Course $course) {
+            AdminDashboardCache::forget();
+        });
+
         static::deleting(function (Course $course) {
             $course->directoriesToDelete = [
                 "materials/{$course->id}",
@@ -49,6 +52,8 @@ class Course extends Model
         });
 
         static::deleted(function (Course $course) {
+            AdminDashboardCache::forget();
+
             $disk = Storage::disk('local');
 
             foreach ($course->directoriesToDelete as $directory) {
@@ -79,7 +84,7 @@ class Course extends Model
         return $this->hasMany(Assignment::class);
     }
 
-     public function isLecturedBy(User $u): bool
+    public function isLecturedBy(User $u): bool
     {
         return $u->role === 'dosen' && (int) $this->lecturer_id === (int) $u->id;
     }
@@ -96,8 +101,7 @@ class Course extends Model
         return $u->role === 'admin' || $this->isLecturedBy($u);
     }
 
-
-/** dosen: MK yang diajar; mahasiswa: MK AKTIF yang diikuti (draft/archived disembunyikan). */
+    /** dosen: MK yang diajar; mahasiswa: MK AKTIF yang diikuti (draft/archived disembunyikan). */
     public function scopeVisibleTo(Builder $query, User $user): Builder
     {
         return match ($user->role) {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\AdminDashboardCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,6 +28,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            AdminDashboardCache::forget();
+        });
+
+        static::updated(function (User $user) {
+            if ($user->wasChanged(['name', 'role'])) {
+                AdminDashboardCache::forget();
+            }
+        });
+
+        static::deleted(function (User $user) {
+            AdminDashboardCache::forget();
+        });
+
+        static::restored(function (User $user) {
+            AdminDashboardCache::forget();
+        });
     }
 
     public function taughtCourses(): HasMany

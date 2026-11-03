@@ -7,6 +7,8 @@ use App\Models\Course;
 use App\Models\Material;
 use App\Models\Submission;
 use App\Models\User;
+use App\Support\AdminDashboardCache;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class AdminDashboardController extends Controller
@@ -15,31 +17,44 @@ class AdminDashboardController extends Controller
     {
         /*
         |--------------------------------------------------------------------------
-        | Statistik Utama
+        | Statistik Utama (Cache 10 Menit)
         |--------------------------------------------------------------------------
         */
-        $totalDosen = User::where('role', 'dosen')->count();
-        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+        $statistik = Cache::remember(
+            AdminDashboardCache::key(),
+            now()->addMinutes(10),
+            function () {
+                $totalDosen = User::where('role', 'dosen')->count();
+                $totalMahasiswa = User::where('role', 'mahasiswa')->count();
 
-        $totalMataKuliah = Course::count();
-        $totalTugas = Assignment::count();
+                $totalMataKuliah = Course::count();
+                $totalTugas = Assignment::count();
+
+                /*
+                |--------------------------------------------------------------------------
+                | Jumlah Aktivitas Hari Ini
+                |--------------------------------------------------------------------------
+                */
+                $hariIni = now()->startOfDay();
+
+                $aktivitasHariIni = Material::where('created_at', '>=', $hariIni)->count()
+                    + Assignment::where('status', 'published')
+                        ->where('created_at', '>=', $hariIni)->count()
+                    + Submission::where('submitted_at', '>=', $hariIni)->count();
+
+                return compact(
+                    'totalDosen',
+                    'totalMahasiswa',
+                    'totalMataKuliah',
+                    'totalTugas',
+                    'aktivitasHariIni',
+                );
+            }
+        );
 
         /*
         |--------------------------------------------------------------------------
-        | Lonceng Notifikasi: jumlah aktivitas hari ini
-        | (materi diunggah + tugas diterbitkan + pengumpulan masuk;
-        | aturannya sama dengan banner di halaman Notifikasi)
-        |--------------------------------------------------------------------------
-        */
-        $hariIni = now()->startOfDay();
-
-        $aktivitasHariIni = Material::where('created_at', '>=', $hariIni)->count()
-            + Assignment::where('status', 'published')->where('created_at', '>=', $hariIni)->count()
-            + Submission::where('submitted_at', '>=', $hariIni)->count();
-
-        /*
-        |--------------------------------------------------------------------------
-        | Ringkasan Mata Kuliah
+        | Ringkasan Mata Kuliah (Tetap Menggunakan Pagination)
         |--------------------------------------------------------------------------
         */
         $ringkasanMataKuliah = Course::with('lecturer')
@@ -52,13 +67,9 @@ class AdminDashboardController extends Controller
         | Kirim Data ke Dashboard Admin
         |--------------------------------------------------------------------------
         */
-        return view('admin.dashboard', compact(
-            'totalDosen',
-            'totalMahasiswa',
-            'totalMataKuliah',
-            'totalTugas',
-            'aktivitasHariIni',
-            'ringkasanMataKuliah',
+        return view('admin.dashboard', array_merge(
+            $statistik,
+            compact('ringkasanMataKuliah'),
         ));
     }
 }
