@@ -439,9 +439,11 @@ class AdminNotifikasiController extends Controller
             ->groupBy('assignments.course_id')
             ->pluck('total', 'course_id');
 
-        return Course::withCount('students')
-            ->get()
-            ->filter(fn ($c) => ($tugasTerbit[$c->id] ?? 0) > 0)
+        return Course::query()
+    ->select(['id', 'code', 'name'])
+    ->withCount('students')
+    ->whereIn('id', $tugasTerbit->keys())
+    ->get()
             ->map(function ($c) use ($tugasTerbit, $pengumpulan) {
                 $target = (int) $c->students_count * (int) $tugasTerbit[$c->id];
                 $masuk = (int) ($pengumpulan[$c->id] ?? 0);

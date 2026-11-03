@@ -45,7 +45,7 @@ class AdminDashboardController extends Controller
         $ringkasanMataKuliah = Course::with('lecturer')
             ->withCount('students')
             ->orderBy('name')
-            ->get();
+            ->paginate(10);
 
         /*
         |--------------------------------------------------------------------------

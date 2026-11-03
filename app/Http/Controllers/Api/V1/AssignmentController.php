@@ -25,7 +25,7 @@ class AssignmentController extends Controller
             ->visibleTo($request->user())
             ->when($request->validated('status'), fn ($q, $status) => $q->where('status', $status))
             ->latest('id')
-            ->paginate($request->integer('per_page', 15));
+            ->paginate(min(max($request->integer('per_page', 15), 1), 100));
 
         return new AssignmentCollection($assignments);
     }

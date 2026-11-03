@@ -554,7 +554,7 @@
         </article>
     </section>
 
-    {{-- RINGKASAN MATA KULIAH --}}
+        {{-- RINGKASAN MATA KULIAH --}}
     <section class="admin-course-panel">
         <div class="admin-course-header">
             <div>
@@ -600,6 +600,8 @@
                 </div>
             @endforelse
         </div>
+
+        {{ $ringkasanMataKuliah->links('pagination::bootstrap-4') }}
     </section>
 
     {{-- CATATAN --}}
