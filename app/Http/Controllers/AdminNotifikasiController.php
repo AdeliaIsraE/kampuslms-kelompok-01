@@ -7,6 +7,7 @@ use App\Models\Course;
 use App\Models\Material;
 use App\Models\Submission;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -14,6 +15,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use App\Support\JumlahNotifikasi;
 
 /**
  * Pusat Notifikasi admin.
@@ -152,7 +154,60 @@ class AdminNotifikasiController extends Controller
             'grupHari' => $grupHari,
             'halaman' => $halaman,
             'total' => $total,
+            'belumDibaca' => JumlahNotifikasi::adminBelumDibaca($request->user()),
         ]);
+    }
+
+    /**
+     * POST admin/notifikasi/dibaca-semua
+     *
+     * Menandai semua aktivitas yang ada sebagai sudah dibaca, lalu
+     * menyembunyikannya dari daftar. Yang disimpan hanya satu timestamp di user
+     * yang login, jadi tidak ada data milik admin lain yang tersentuh dan
+     * aktivitas yang masuk sesudahnya tetap tampil sebagai belum dibaca.
+     */
+    public function dibacaSemua(Request $request): RedirectResponse
+    {
+        $admin = $request->user();
+        $jumlah = JumlahNotifikasi::adminBelumDibaca($admin);
+
+        $admin->forceFill(['notifications_read_at' => JumlahNotifikasi::batasTandaiSemuaAdmin()])->save();
+
+        // back() mempertahankan tab, periode, pencarian, dan halaman yang sedang dibuka.
+        return back()->with(
+            'success',
+            $jumlah > 0 ? "{$jumlah} aktivitas ditandai sudah dibaca." : 'Tidak ada aktivitas yang belum dibaca.'
+        );
+    }
+
+    /**
+     * POST admin/notifikasi/{jenis}/{id}/dibaca
+     *
+     * Menandai satu aktivitas sebagai sudah dibaca; aktivitas itu lalu hilang
+     * dari feed, tab, dan angka lonceng milik admin yang login saja. Tidak
+     * mengubah data sumbernya (materi, tugas, atau pengumpulan).
+     */
+    public function dibaca(Request $request, string $jenis, int $id): RedirectResponse
+    {
+        $sumber = match ($jenis) {
+            'materi' => Material::query(),
+            'tugas' => Assignment::query()->where('status', 'published'),
+            'pengumpulan' => Submission::query(),
+            default => abort(404),
+        };
+
+        // 404 bila aktivitasnya tidak ada.
+        $sumber->whereKey($id)->firstOrFail();
+
+        DB::table('notifikasi_admin_dibaca')->insertOrIgnore([
+            'user_id' => $request->user()->id,
+            'jenis' => $jenis,
+            'item_id' => $id,
+            'created_at' => now(),
+        ]);
+
+        // back() mempertahankan tab, periode, pencarian, dan halaman yang sedang dibuka.
+        return back()->with('success', 'Aktivitas ditandai sudah dibaca.');
     }
 
     /*
@@ -181,6 +236,12 @@ class AdminNotifikasiController extends Controller
             });
         }
 
+        // Aktivitas yang sudah ditandai dibaca (satu per satu atau sekaligus) tidak ditampilkan lagi.
+        if ($dibacaSemua = JumlahNotifikasi::batasDibacaAdmin(auth()->user())) {
+            $query->where('materials.created_at', '>', $dibacaSemua);
+        }
+        JumlahNotifikasi::tanpaDitandai($query, (int) auth()->id(), 'materi', 'materials.id');
+
         return $query;
     }
 
@@ -206,6 +267,12 @@ class AdminNotifikasiController extends Controller
             });
         }
 
+        // Aktivitas yang sudah ditandai dibaca (satu per satu atau sekaligus) tidak ditampilkan lagi.
+        if ($dibacaSemua = JumlahNotifikasi::batasDibacaAdmin(auth()->user())) {
+            $query->where('assignments.created_at', '>', $dibacaSemua);
+        }
+        JumlahNotifikasi::tanpaDitandai($query, (int) auth()->id(), 'tugas', 'assignments.id');
+
         return $query;
     }
 
@@ -229,6 +296,12 @@ class AdminNotifikasiController extends Controller
                     ->orWhere('mahasiswa.name', 'like', $pola);
             });
         }
+
+        // Aktivitas yang sudah ditandai dibaca (satu per satu atau sekaligus) tidak ditampilkan lagi.
+        if ($dibacaSemua = JumlahNotifikasi::batasDibacaAdmin(auth()->user())) {
+            $query->where('submissions.submitted_at', '>', $dibacaSemua);
+        }
+        JumlahNotifikasi::tanpaDitandai($query, (int) auth()->id(), 'pengumpulan', 'submissions.id');
 
         return $query;
     }

@@ -17,6 +17,12 @@
 @endphp
 
 <x-layout title="Notifikasi Dosen" role="dosen" full-footer>
+    {{-- Gaya tombol tandai dibaca. Bisa dipindah ke notifikasi.css. --}}
+    <style>
+        .notif-markall { display: flex; justify-content: flex-end; margin: 0 0 0.85rem; }
+        .notif-inline-form { display: inline; margin: 0; }
+    </style>
+
     <section class="notif">
 
         {{-- BANNER --}}
@@ -167,6 +173,13 @@
                     </form>
                 </div>
 
+                @if ($belumDibaca > 0)
+                    <form method="POST" action="{{ route('dosen.notifikasi.dibaca-semua') }}" class="notif-markall">
+                        @csrf
+                        <button type="submit" class="notif-btn">Tandai semua dibaca ({{ $belumDibaca }})</button>
+                    </form>
+                @endif
+
                 @forelse ($grupHari as $grup)
                     <section class="notif-day">
                         <div class="notif-day__head">
@@ -240,6 +253,10 @@
                                                 {{ $item['dinilai'] ? 'Periksa Nilai' : 'Beri Nilai' }}
                                             </a>
                                             <a class="notif-btn" href="{{ route('pengumpulan.unduh', $item['id']) }}">Unduh Berkas</a>
+                                            <form method="POST" action="{{ route('dosen.notifikasi.dibaca', $item['id']) }}" class="notif-inline-form">
+                                                @csrf
+                                                <button type="submit" class="notif-btn">Tandai Dibaca</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </article>

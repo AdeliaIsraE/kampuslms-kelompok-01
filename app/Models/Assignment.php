@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Events\TugasDipublikasikan;
 use App\Support\AdminDashboardCache;
+use App\Support\FileSize;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

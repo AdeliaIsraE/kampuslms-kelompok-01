@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Assignment;
 use App\Models\Course;
 use App\Models\Submission;
+use App\Support\JumlahNotifikasi;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -19,7 +21,9 @@ use Illuminate\View\View;
  *
  * Hanya menampilkan pengumpulan tugas pada mata kuliah yang diampu dosen
  * yang sedang login (courses.lecturer_id). Data diturunkan dari tabel yang
- * sudah ada, tanpa tabel notifikasi dan tanpa status dibaca.
+ * sudah ada, tanpa tabel notifikasi. Status dibaca disimpan terpisah: satu
+ * timestamp per user ("tandai semua dibaca") dan tabel notifikasi_admin_dibaca
+ * ("tandai dibaca" satu per satu). Pengumpulan yang sudah dibaca tidak tampil lagi.
  */
 class DosenNotifikasiController extends Controller
 {
@@ -85,7 +89,7 @@ class DosenNotifikasiController extends Controller
         $hitung = DB::query();
         foreach (array_keys(self::TAB) as $kunci) {
             $hitung->selectSub(
-                $this->terapkanTab($this->kumpulBase($mkIds, $sejak, $q, $mk), $kunci)->selectRaw('count(*)'),
+                $this->terapkanTab($this->kumpulFeed($mkIds, $sejak, $q, $mk), $kunci)->selectRaw('count(*)'),
                 "n_{$kunci}"
             );
         }
@@ -109,7 +113,7 @@ class DosenNotifikasiController extends Controller
         $total = $tabs[$tab]['jumlah'];
         $halamanAktif = LengthAwarePaginator::resolveCurrentPage();
 
-        $baris = $this->terapkanTab($this->kumpulBase($mkIds, $sejak, $q, $mk), $tab)
+        $baris = $this->terapkanTab($this->kumpulFeed($mkIds, $sejak, $q, $mk), $tab)
             ->select(
                 'submissions.*',
                 'assignments.title as assignment_title',
@@ -154,7 +158,60 @@ class DosenNotifikasiController extends Controller
             'grupHari' => $grupHari,
             'halaman' => $halaman,
             'total' => $halaman->total(),
+            'belumDibaca' => $this->kumpulFeed($mkIds, null, '', null)->count(),
         ]);
+    }
+
+    /**
+     * POST dosen/notifikasi/{id}/dibaca
+     *
+     * Menandai satu pengumpulan sebagai sudah dibaca; pengumpulan itu lalu
+     * hilang dari daftar dan angka lonceng milik dosen yang login saja. Hanya
+     * pengumpulan di mata kuliah yang diampu (selain itu 404). Nilai dan berkas
+     * mahasiswa tidak berubah.
+     */
+    public function dibaca(Request $request, int $id): RedirectResponse
+    {
+        $milikDosen = Submission::query()
+            ->join('assignments', 'assignments.id', '=', 'submissions.assignment_id')
+            ->join('courses', 'courses.id', '=', 'assignments.course_id')
+            ->where('courses.lecturer_id', $request->user()->id)
+            ->where('submissions.id', $id)
+            ->exists();
+
+        abort_unless($milikDosen, 404);
+
+        DB::table('notifikasi_admin_dibaca')->insertOrIgnore([
+            'user_id' => $request->user()->id,
+            'jenis' => 'pengumpulan',
+            'item_id' => $id,
+            'created_at' => now(),
+        ]);
+
+        // back() mempertahankan tab, filter, dan halaman yang sedang dibuka.
+        return back()->with('success', 'Pengumpulan ditandai sudah dibaca.');
+    }
+
+    /**
+     * POST dosen/notifikasi/dibaca-semua
+     *
+     * Menandai semua pengumpulan yang ada sebagai sudah dibaca (hilang dari
+     * daftar). Hanya satu timestamp di user yang login; pengumpulan baru yang
+     * masuk sesudahnya tetap tampil.
+     */
+    public function dibacaSemua(Request $request): RedirectResponse
+    {
+        $dosen = $request->user();
+
+        $mkIds = Course::where('lecturer_id', $dosen->id)->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $jumlah = $this->kumpulFeed($mkIds, null, '', null)->count();
+
+        $dosen->forceFill(['notifications_read_at' => JumlahNotifikasi::batasTandaiSemuaDosen($dosen)])->save();
+
+        return back()->with(
+            'success',
+            $jumlah > 0 ? "{$jumlah} pengumpulan ditandai sudah dibaca." : 'Tidak ada pengumpulan yang belum dibaca.'
+        );
     }
 
     /*
@@ -189,6 +246,22 @@ class DosenNotifikasiController extends Controller
         }
 
         return $query;
+    }
+
+    /**
+     * kumpulBase() tanpa pengumpulan yang sudah dibaca. Dipakai daftar dan
+     * hitungan tab. Kartu ringkasan dan antrean penilaian tetap memakai
+     * kumpulBase() karena itu statistik, bukan notifikasi.
+     */
+    private function kumpulFeed(array $mkIds, ?Carbon $sejak, string $q, ?int $mk): Builder
+    {
+        $query = $this->kumpulBase($mkIds, $sejak, $q, $mk);
+
+        if ($dibacaSemua = auth()->user()->notifications_read_at) {
+            $query->where('submissions.submitted_at', '>', $dibacaSemua);
+        }
+
+        return JumlahNotifikasi::tanpaDitandai($query, (int) auth()->id(), 'pengumpulan', 'submissions.id');
     }
 
     private function terapkanTab(Builder $query, string $tab): Builder

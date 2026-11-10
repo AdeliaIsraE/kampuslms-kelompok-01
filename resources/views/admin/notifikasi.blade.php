@@ -16,6 +16,12 @@
 @endphp
 
 <x-layout title="Notifikasi Admin" role="admin" full-footer>
+    {{-- Gaya tombol tandai dibaca. Bisa dipindah ke notifikasi.css. --}}
+    <style>
+        .notif-markall { display: flex; justify-content: flex-end; margin: 0 0 0.85rem; }
+        .notif-inline-form { display: inline; margin: 0; }
+    </style>
+
     <section class="notif">
 
         {{-- BANNER --}}
@@ -30,7 +36,7 @@
                 Pantau materi yang diunggah dosen, tugas yang diterbitkan, dan pengumpulan tugas mahasiswa.
             </p>
             <span class="dash-hero__status">
-                <i></i>{{ $ringkasan['aktivitasHariIni'] }} aktivitas hari ini
+                <i></i>{{ $ringkasan['aktivitasHariIni'] }} aktivitas hari ini, {{ $belumDibaca }} belum dibaca
             </span>
         </header>
 
@@ -160,6 +166,13 @@
                     </form>
                 </div>
 
+                @if ($belumDibaca > 0)
+                    <form method="POST" action="{{ route('admin.notifikasi.dibaca-semua') }}" class="notif-markall">
+                        @csrf
+                        <button type="submit" class="notif-btn">Tandai semua dibaca ({{ $belumDibaca }})</button>
+                    </form>
+                @endif
+
                 @forelse ($grupHari as $grup)
                     <section class="notif-day">
                         <div class="notif-day__head">
@@ -255,6 +268,10 @@
                                                 <a class="notif-btn" href="{{ route('admin.tugas.show', $item['assignment_id']) }}">Lihat Tugas</a>
                                             @endif
                                             <a class="notif-btn" href="{{ route('admin.mata-kuliah.show', $item['course_id']) }}">Lihat Mata Kuliah</a>
+                                            <form method="POST" action="{{ route('admin.notifikasi.dibaca', [$item['jenis'], $item['id']]) }}" class="notif-inline-form">
+                                                @csrf
+                                                <button type="submit" class="notif-btn">Tandai Dibaca</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </article>
