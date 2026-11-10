@@ -43,28 +43,17 @@ class JumlahNotifikasi
     }
 
     /**
-     * Waktu yang harus disimpan saat admin menekan "Tandai semua dibaca":
-     * sekarang, atau waktu aktivitas terbaru bila lebih baru dari sekarang
-     * (mis. data contoh dengan tanggal di masa depan). Tanpa ini, aktivitas
-     * bertanggal lebih baru dari "sekarang" tidak pernah ikut terbaca.
+     * Waktu yang disimpan saat admin menekan "Tandai semua dibaca": SEKARANG.
+     *
+     * Sengaja tidak memakai waktu aktivitas terbaru. Data contoh (seeder)
+     * punya tanggal di masa depan; bila batas ikut digeser ke sana, semua
+     * aktivitas baru (waktunya < batas) tidak akan tampil sampai tanggal itu
+     * lewat. Dengan now(), hanya aktivitas yang sudah ada saat ini yang
+     * disembunyikan, dan yang masuk sesudahnya tetap muncul sebagai baru.
      */
     public static function batasTandaiSemuaAdmin(): Carbon
     {
-        $r = DB::query()
-            ->selectSub(Material::selectRaw('max(created_at)'), 'materi')
-            ->selectSub(Assignment::where('status', 'published')->selectRaw('max(created_at)'), 'tugas')
-            ->selectSub(Submission::selectRaw('max(submitted_at)'), 'pengumpulan')
-            ->first();
-
-        $batas = now();
-
-        foreach ([$r->materi, $r->tugas, $r->pengumpulan] as $waktu) {
-            if ($waktu && ($t = Carbon::parse($waktu))->greaterThan($batas)) {
-                $batas = $t;
-            }
-        }
-
-        return $batas;
+        return now();
     }
 
     /**
@@ -174,20 +163,13 @@ class JumlahNotifikasi
     }
 
     /**
-     * Waktu yang disimpan saat dosen menekan "Tandai semua dibaca": sekarang,
-     * atau waktu pengumpulan terbaru di mata kuliahnya bila lebih baru dari
-     * sekarang (data contoh bertanggal masa depan).
+     * Waktu yang disimpan saat dosen menekan "Tandai semua dibaca": SEKARANG.
+     * Alasannya sama dengan batasTandaiSemuaAdmin(): jangan menggeser batas
+     * ke tanggal masa depan milik data contoh, agar pengumpulan baru tetap
+     * tampil. Parameter $dosen dipertahankan agar pemanggil tidak berubah.
      */
     public static function batasTandaiSemuaDosen(User $dosen): Carbon
     {
-        $terbaru = Submission::query()
-            ->join('assignments', 'assignments.id', '=', 'submissions.assignment_id')
-            ->join('courses', 'courses.id', '=', 'assignments.course_id')
-            ->where('courses.lecturer_id', $dosen->id)
-            ->max('submissions.submitted_at');
-
-        $batas = now();
-
-        return $terbaru && ($t = Carbon::parse($terbaru))->greaterThan($batas) ? $t : $batas;
+        return now();
     }
 }
