@@ -37,18 +37,18 @@
     text-align: center;
     font-size: 0.8rem;
     font-weight: 800;
-    color: var(--color-primary);
-    background: color-mix(in srgb, var(--color-primary) 10%, white);
-    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--mix-base));
+    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, var(--mix-base));
     border-radius: 999px;
 }
 
 .gr-flash {
     margin: 0 0 1rem;
     padding: 0.8rem 1rem;
-    color: #1e7e34;
-    background: #e6f4ea;
-    border: 1px solid #b7dfc2;
+    color: var(--flash2-fg);
+    background: var(--flash2-bg);
+    border: 1px solid var(--flash2-border);
     border-radius: 14px;
     font-size: 0.9rem;
 }
@@ -121,7 +121,7 @@
 .gr-name {
     font-size: 0.98rem;
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
     overflow-wrap: anywhere;
 }
 .gr-nim {
@@ -140,10 +140,10 @@
     border-radius: 999px;
     white-space: nowrap;
 }
-.gr-status--none  { color: #8a5d12; background: #f8ecd3; }
-.gr-status--stale { color: #b3261e; background: #fdecea; }
-.gr-status--draft { color: #2c4f85; background: #e1e9f5; }
-.gr-status--done  { color: #3f6b1c; background: #e3eed7; }
+.gr-status--none  { color: var(--chip-warn-fg); background: var(--chip-warn-bg); }
+.gr-status--stale { color: var(--chip-bad-fg); background: var(--chip-bad-bg); }
+.gr-status--draft { color: var(--chip-info-fg); background: var(--chip-info-bg); }
+.gr-status--done  { color: var(--chip-ok-fg); background: var(--chip-ok-bg); }
 
 .gr-chevron {
     flex-shrink: 0;
@@ -161,7 +161,7 @@
     margin: 0.9rem 0 1rem;
     line-height: 1.6;
 }
-.gr-meta a { color: var(--color-primary); font-weight: 600; }
+.gr-meta a { color: var(--color-primary-text); font-weight: 600; }
 
 /* form nilai tidak perlu kotak bertumpuk lagi di dalam dropdown */
 .gr-body .mk-form {

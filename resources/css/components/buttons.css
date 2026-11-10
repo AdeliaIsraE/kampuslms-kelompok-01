@@ -28,7 +28,7 @@
     color: inherit;
 }
 .mk-btn-danger {
-    border: 1px solid #f5c2c0;
-    background: #fdecea;
-    color: #b3261e;
+    border: 1px solid var(--chip-bad-border);
+    background: var(--chip-bad-bg);
+    color: var(--chip-bad-fg);
 }

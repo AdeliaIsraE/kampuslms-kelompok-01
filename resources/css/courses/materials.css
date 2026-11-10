@@ -34,7 +34,7 @@
 .mk-list-title {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
     text-decoration: none;
 }
 
@@ -71,24 +71,24 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    background: #eee;
+    background: var(--chip-neutral-bg);
     color: var(--color-ink);
 }
 
 .mk-chip--file,
 .mk-chip--published {
-    background: #e3eed7;
-    color: #3f6b1c;
+    background: var(--chip-ok-bg);
+    color: var(--chip-ok-fg);
 }
 
 .mk-chip--link {
-    background: #e1e9f5;
-    color: #2c4f85;
+    background: var(--chip-info-bg);
+    color: var(--chip-info-fg);
 }
 
 .mk-chip--draft {
-    background: #f8ecd3;
-    color: #8a5d12;
+    background: var(--chip-warn-bg);
+    color: var(--chip-warn-fg);
 }
 
 /* =========================================================
@@ -153,9 +153,9 @@
 .mk-form .admin-form-tag {
     flex-shrink: 0;
     padding: 0.45rem 0.7rem;
-    color: var(--color-primary, #d41463);
-    background: color-mix(in srgb, var(--color-primary, #d41463) 8%, white);
-    border: 1px solid color-mix(in srgb, var(--color-primary, #d41463) 18%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary, #d41463) 8%, var(--mix-base));
+    border: 1px solid color-mix(in srgb, var(--color-primary, #d41463) 18%, var(--mix-base));
     border-radius: 999px;
     font-size: 0.65rem;
     font-weight: 800;
@@ -198,7 +198,7 @@
     box-sizing: border-box;
     padding: 0.75rem 0.9rem;
     color: var(--color-ink, #241b2f);
-    background: #fff;
+    background: var(--color-field);
     border: 1.5px solid var(--color-border, #eadfe5);
     border-radius: 11px;
     font-family: inherit;
@@ -209,7 +209,7 @@
 }
 
 .mk-form .mk-input::placeholder {
-    color: #a69aa5;
+    color: var(--color-placeholder);
 }
 
 .mk-form .mk-input:hover {
@@ -248,9 +248,9 @@
 .mk-form input[type="file"].mk-input::file-selector-button {
     margin-right: 0.7rem;
     padding: 0.45rem 0.8rem;
-    color: var(--color-primary, #d41463);
-    background: color-mix(in srgb, var(--color-primary, #d41463) 8%, white);
-    border: 1px solid color-mix(in srgb, var(--color-primary, #d41463) 20%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary, #d41463) 8%, var(--mix-base));
+    border: 1px solid color-mix(in srgb, var(--color-primary, #d41463) 20%, var(--mix-base));
     border-radius: 8px;
     font-family: inherit;
     font-size: 0.8rem;
@@ -268,7 +268,7 @@
 }
 
 .mk-form .mk-hint a {
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
     font-weight: 700;
     text-decoration: none;
     overflow-wrap: anywhere;
@@ -303,9 +303,9 @@
 .mk-form-errors {
     margin-bottom: 1.5rem;
     padding: 1rem 1.2rem;
-    color: #b3261e;
-    background: #fff0ef;
-    border: 1px solid #f5c2c0;
+    color: var(--chip-bad-fg);
+    background: var(--chip-bad-bg);
+    border: 1px solid var(--chip-bad-border);
     border-left: 4px solid #d93025;
     border-radius: 12px;
     font-size: 0.87rem;
@@ -381,7 +381,7 @@
     min-height: 44px;
     padding: 0.75rem 1.4rem;
     color: var(--color-ink, #241b2f);
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border, #eadfe5);
     border-radius: 11px;
     font-family: inherit;
@@ -392,8 +392,8 @@
 }
 
 .mk-form .mk-btn-ghost:hover {
-    color: var(--color-primary, #d41463);
-    background: color-mix(in srgb, var(--color-primary, #d41463) 5%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary, #d41463) 5%, var(--mix-base));
     border-color: color-mix(
         in srgb,
         var(--color-primary, #d41463) 30%,

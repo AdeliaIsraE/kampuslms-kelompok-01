@@ -54,7 +54,7 @@
     font-weight: 800;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 .as-card .as-title {
     margin: 0;
@@ -95,8 +95,8 @@
     flex: 0 0 36px;
     width: 36px;
     height: 36px;
-    color: var(--color-primary);
-    background: color-mix(in srgb, var(--color-primary) 10%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--mix-base));
     border-radius: 11px;
 }
 .as-info__icon svg { width: 18px; height: 18px; }
@@ -157,8 +157,8 @@
     flex: 0 0 34px;
     width: 34px;
     height: 34px;
-    color: var(--color-primary);
-    background: color-mix(in srgb, var(--color-primary) 10%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--mix-base));
     border-radius: 10px;
 }
 .as-file__icon svg { width: 17px; height: 17px; }

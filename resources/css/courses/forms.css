@@ -14,8 +14,8 @@
 
 /* Pesan error validasi */
 .alert-error {
-    background: #fdecea;
-    border: 1px solid #f5c2c0;
+    background: var(--chip-bad-bg);
+    border: 1px solid var(--chip-bad-border);
     border-radius: 6px;
     padding: 1rem;
     margin-bottom: 1.5rem;
@@ -25,7 +25,7 @@
 .alert-error ul {
     margin: 0;
     padding-left: 1.2rem;
-    color: #b3261e;
+    color: var(--chip-bad-fg);
 }
 
 /* Kartu pembungkus form */
@@ -75,7 +75,7 @@
 }
 
 .form-error {
-    color: #b3261e;
+    color: var(--chip-bad-fg);
     font-size: 0.85rem;
     margin-top: 0.3rem;
 }
@@ -124,7 +124,7 @@
 
 .admin-form-eyebrow {
     margin: 0 0 0.65rem;
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.15em;
@@ -203,16 +203,16 @@
 .admin-form-tag {
     flex-shrink: 0;
     padding: 0.45rem 0.7rem;
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
     background: color-mix(
         in srgb,
         var(--color-primary, #d41463) 8%,
-        white
+        var(--mix-base)
     );
     border: 1px solid color-mix(
         in srgb,
         var(--color-primary, #d41463) 18%,
-        white
+        var(--mix-base)
     );
     border-radius: 999px;
     font-size: 0.65rem;
@@ -254,7 +254,7 @@
     min-height: 46px;
     padding: 0.75rem 0.9rem;
     color: var(--color-ink, #241b2f);
-    background: #fff;
+    background: var(--color-field);
     border: 1.5px solid var(--color-border, #eadfe5);
     border-radius: 11px;
     font-family: inherit;
@@ -268,7 +268,7 @@
 }
 
 .admin-form-page .form-control::placeholder {
-    color: #a69aa5;
+    color: var(--color-placeholder);
 }
 
 .admin-form-page .form-control:hover {
@@ -383,16 +383,16 @@
 
 .admin-form-actions .btn-secondary {
     color: var(--color-ink, #241b2f);
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border, #eadfe5);
 }
 
 .admin-form-actions .btn-secondary:hover {
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
     background: color-mix(
         in srgb,
         var(--color-primary, #d41463) 5%,
-        white
+        var(--mix-base)
     );
     border-color: color-mix(
         in srgb,
@@ -528,7 +528,7 @@
     font: inherit;
     font-size: 0.95rem;
     color: var(--color-ink);
-    background: #fff;
+    background: var(--color-field);
     border: 1.5px solid var(--color-accent);
     border-radius: 14px;
     outline: none;
@@ -593,8 +593,8 @@
 }
 
 .auth-card .btn-secondary {
-    color: var(--color-primary-dark);
-    background: #fff;
+    color: var(--color-primary-dark-text);
+    background: var(--color-surface);
     border: 1.5px solid var(--color-border);
 }
 
@@ -602,7 +602,7 @@
     background: color-mix(
         in srgb,
         var(--color-primary) 6%,
-        white
+        var(--mix-base)
     );
     border-color: color-mix(
         in srgb,
@@ -642,7 +642,7 @@
 }
 
 .password-toggle:hover {
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 
 .password-toggle:focus-visible {

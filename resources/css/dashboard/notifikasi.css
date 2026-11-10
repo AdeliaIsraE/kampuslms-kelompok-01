@@ -52,9 +52,9 @@ main:has(.notif) {
     font-size: 0.85rem;
     font-weight: 700;
     line-height: 1.2;
-    color: var(--color-primary-dark);
+    color: var(--color-primary-dark-text);
     text-decoration: none;
-    background: #fff;
+    background: var(--color-surface);
     border: 1.5px solid var(--color-border);
     border-radius: 12px;
     cursor: pointer;
@@ -63,7 +63,7 @@ main:has(.notif) {
 
 .notif-btn:hover {
     transform: translateY(-2px);
-    background: color-mix(in srgb, var(--color-primary) 6%, white);
+    background: color-mix(in srgb, var(--color-primary) 6%, var(--mix-base));
     border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
 }
 
@@ -147,9 +147,9 @@ main:has(.notif) {
     text-align: center;
     font-size: 0.72rem;
     font-weight: 800;
-    color: var(--color-primary);
-    background: color-mix(in srgb, var(--color-primary) 10%, white);
-    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--mix-base));
+    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, var(--mix-base));
     border-radius: 999px;
 }
 
@@ -180,7 +180,7 @@ main:has(.notif) {
     min-width: 0;
     padding: 0 0.9rem;
     color: var(--color-ink-soft);
-    background: #fff;
+    background: var(--color-field);
     border: 1.5px solid var(--color-accent);
     border-radius: 14px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -215,7 +215,7 @@ main:has(.notif) {
     font: inherit;
     font-size: 0.9rem;
     color: var(--color-ink);
-    background: #fff;
+    background: var(--color-field);
     border: 1.5px solid var(--color-accent);
     border-radius: 14px;
     outline: none;
@@ -248,7 +248,7 @@ main:has(.notif) {
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 
 .notif-day__head span {
@@ -279,10 +279,10 @@ main:has(.notif) {
     box-shadow: 0 12px 26px color-mix(in srgb, var(--tone) 10%, transparent);
 }
 
-.notif-item--materi      { --tone: #2563eb; }
-.notif-item--tugas       { --tone: #7c3aed; }
+.notif-item--materi      { --tone: var(--tone-blue); }
+.notif-item--tugas       { --tone: var(--tone-purple); }
 .notif-item--pengumpulan { --tone: var(--color-primary); }
-.notif-item--terlambat   { --tone: #b3261e; }
+.notif-item--terlambat   { --tone: var(--chip-bad-fg); }
 
 .notif-item__icon {
     flex: 0 0 44px;
@@ -292,7 +292,7 @@ main:has(.notif) {
     width: 44px;
     height: 44px;
     color: var(--tone);
-    background: color-mix(in srgb, var(--tone) 12%, white);
+    background: color-mix(in srgb, var(--tone) 12%, var(--mix-base));
     border-radius: 14px;
 }
 
@@ -352,7 +352,7 @@ main:has(.notif) {
 
 .notif-item__text a {
     font-weight: 700;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
     text-decoration: none;
 }
 
@@ -385,12 +385,12 @@ main:has(.notif) {
     white-space: nowrap;
 }
 
-.notif-chip--muted { color: var(--color-ink-soft); background: color-mix(in srgb, var(--color-ink-soft) 13%, white); }
-.notif-chip--tone  { color: var(--tone);            background: color-mix(in srgb, var(--tone) 12%, white); }
-.notif-chip--ok    { color: #3f6b1c; background: #e3eed7; }
-.notif-chip--warn  { color: #8a5d12; background: #f8ecd3; }
-.notif-chip--bad   { color: #b3261e; background: #fdecea; }
-.notif-chip--info  { color: #2c4f85; background: #e1e9f5; }
+.notif-chip--muted { color: var(--color-ink-soft); background: color-mix(in srgb, var(--color-ink-soft) 13%, var(--mix-base)); }
+.notif-chip--tone  { color: var(--tone);            background: color-mix(in srgb, var(--tone) 12%, var(--mix-base)); }
+.notif-chip--ok    { color: var(--chip-ok-fg); background: var(--chip-ok-bg); }
+.notif-chip--warn  { color: var(--chip-warn-fg); background: var(--chip-warn-bg); }
+.notif-chip--bad   { color: var(--chip-bad-fg); background: var(--chip-bad-bg); }
+.notif-chip--info  { color: var(--chip-info-fg); background: var(--chip-info-bg); }
 
 .notif-meta {
     padding: 0.22rem 0.7rem;
@@ -404,7 +404,7 @@ main:has(.notif) {
 .notif-meta--kode {
     font-weight: 800;
     letter-spacing: 0.05em;
-    color: var(--color-primary-dark);
+    color: var(--color-primary-dark-text);
 }
 
 /* lampiran berkas / tautan */
@@ -426,8 +426,8 @@ main:has(.notif) {
     justify-content: center;
     width: 34px;
     height: 34px;
-    color: var(--color-primary);
-    background: color-mix(in srgb, var(--color-primary) 10%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--mix-base));
     border-radius: 10px;
 }
 
@@ -571,7 +571,7 @@ a.notif-page:hover {
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.16em;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 
 .notif-card__title {
@@ -627,7 +627,7 @@ a.notif-page:hover {
     text-decoration: none;
 }
 
-.notif-course__top a:hover { color: var(--color-primary); }
+.notif-course__top a:hover { color: var(--color-primary-text); }
 
 .notif-course__top strong {
     flex-shrink: 0;
@@ -639,7 +639,7 @@ a.notif-page:hover {
 .notif-bar {
     height: 8px;
     overflow: hidden;
-    background: #f0e8ed;
+    background: var(--color-track);
     border-radius: 999px;
 }
 
@@ -675,7 +675,7 @@ a.notif-page:hover {
 
 .notif-deadline:hover {
     transform: translateX(3px);
-    background: #fff;
+    background: var(--color-surface);
     border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
 }
 
@@ -700,8 +700,8 @@ a.notif-page:hover {
     padding: 0.15rem 0.6rem;
     font-size: 0.72rem;
     font-weight: 800;
-    color: var(--color-primary-dark);
-    background: #fff;
+    color: var(--color-primary-dark-text);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 999px;
 }
@@ -714,15 +714,15 @@ a.notif-page:hover {
 .notif-deadline__left {
     font-size: 0.76rem;
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 
-.notif-deadline.is-urgent { border-color: #f5c2c0; }
-.notif-deadline.is-urgent .notif-deadline__left { color: #b3261e; }
+.notif-deadline.is-urgent { border-color: var(--chip-bad-border); }
+.notif-deadline.is-urgent .notif-deadline__left { color: var(--chip-bad-fg); }
 .notif-deadline.is-urgent .notif-deadline__time {
-    color: #b3261e;
-    background: #fdecea;
-    border-color: #f5c2c0;
+    color: var(--chip-bad-fg);
+    background: var(--chip-bad-bg);
+    border-color: var(--chip-bad-border);
 }
 
 
@@ -750,3 +750,6 @@ a.notif-page:hover {
     .notif-btn, .notif-tab, .notif-item, .notif-page, .notif-deadline,
     .notif-search, .notif-select, .notif-bar__fill { transition: none; }
 }
+
+/* Mode gelap: persentase di sisi mata kuliah dibuat netral (warna Berry kontrasnya rendah di atas indigo) */
+:root[data-theme="dark"] .notif-course__top strong { color: var(--color-ink); }

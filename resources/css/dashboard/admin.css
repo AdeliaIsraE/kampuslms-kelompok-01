@@ -44,7 +44,7 @@
     line-height: 1;
     font-weight: 800;
     letter-spacing: 0.16em;
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
 }
 
 .admin-dashboard__title {
@@ -86,7 +86,7 @@
     flex-shrink: 0;
     border-radius: 50%;
     background: #22c55e;
-    box-shadow: 0 0 0 4px #dcfce7;
+    box-shadow: 0 0 0 4px color-mix(in srgb, #22c55e 28%, transparent);
 }
 
 /* =========================================================

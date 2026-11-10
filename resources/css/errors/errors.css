@@ -2,7 +2,33 @@
    errors.css — halaman error mandiri
    (errors/401.blade.php, errors/403.blade.php, dan errors/404.blade.php)
    Halaman ini tidak memakai <x-layout>, jadi punya CSS sendiri.
+   Mode gelap: ikut pilihan tema yang tersimpan (<html data-theme="dark">),
+   diatur skrip kecil di <head> (lihat panduan).
    ========================================================= */
+
+:root {
+    --err-bg: #f8fafc;
+    --err-card: white;
+    --err-text: #1f2937;
+    --err-muted: #6b7280;
+    --err-code: #dc2626;
+    --err-btn: #2563eb;
+    --err-btn-hover: #1d4ed8;
+    --err-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    --err-bg: #211D38;
+    --err-card: #2E294E;
+    --err-text: #FFFDE8;
+    --err-muted: #B7B2D6;
+    --err-code: #FF7A93;
+    --err-btn: #D90368;
+    --err-btn-hover: #B8025A;
+    --err-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+}
 
 * {
     box-sizing: border-box;
@@ -16,8 +42,8 @@ body {
     justify-content: center;
     align-items: center;
     font-family: Arial, sans-serif;
-    background-color: #f8fafc;
-    color: #1f2937;
+    background-color: var(--err-bg);
+    color: var(--err-text);
 }
 
 .error-container {
@@ -25,16 +51,16 @@ body {
     max-width: 500px;
     padding: 45px 35px;
     text-align: center;
-    background-color: white;
+    background-color: var(--err-card);
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--err-shadow);
 }
 
 .error-code {
     margin-bottom: 10px;
     font-size: 72px;
     font-weight: bold;
-    color: #dc2626;
+    color: var(--err-code);
 }
 
 h1 {
@@ -46,13 +72,13 @@ p {
     margin-bottom: 25px;
     font-size: 15px;
     line-height: 1.6;
-    color: #6b7280;
+    color: var(--err-muted);
 }
 
 .back-button {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #2563eb;
+    background-color: var(--err-btn);
     color: white;
     text-decoration: none;
     border-radius: 6px;
@@ -60,5 +86,5 @@ p {
 }
 
 .back-button:hover {
-    background-color: #1d4ed8;
+    background-color: var(--err-btn-hover);
 }

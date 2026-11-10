@@ -12,12 +12,27 @@
 /* ---------- Latar halaman ---------- */
 
 .login-body {
+    /* Variabel tema (terang = tampilan asli). Mode gelap ada di bagian paling bawah file. */
+    --lg-bg: linear-gradient(135deg, #A9BF55, #CB125E);
+    --lg-card-bg: rgba(255, 255, 255, 0.18);
+    --lg-card-border: rgba(255, 255, 255, 0.55);
+    --lg-panel-bg: rgba(255, 255, 255, 0.9);
+    --lg-field-bg: #fff;
+    --lg-text: #2B1B22;
+    --lg-muted: #8A6B75;
+    --lg-edge: #DEA249;
+    --lg-link: #CB125E;
+    --lg-line: #F3D9C4;
+    --lg-social-bg: rgba(203, 18, 94, 0.08);
+    --lg-ok-bg: #f1f5e2; --lg-ok-border: #a9bf55; --lg-ok-text: #55612b;
+    --lg-bad-bg: #fdecea; --lg-bad-border: #f5c2c0; --lg-bad-text: #b3261e;
+
     position: relative;
     min-height: 100vh;
     margin: 0;
     overflow-x: hidden;
     font-family: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-    background: linear-gradient(135deg, #A9BF55, #CB125E);
+    background: var(--lg-bg);
 }
 
 /* titik-titik dekoratif di pojok (seperti referensi) */
@@ -60,9 +75,9 @@
     width: 100%;
     max-width: 920px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--lg-card-border);
     border-radius: 28px;
-    background: rgba(255, 255, 255, 0.18);
+    background: var(--lg-card-bg);
     box-shadow: 0 30px 70px rgba(60, 10, 35, 0.35);
     -webkit-backdrop-filter: blur(18px);
     backdrop-filter: blur(18px);
@@ -154,7 +169,7 @@
     flex-direction: column;
     justify-content: center;
     padding: 2.5rem;
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--lg-panel-bg);
 }
 
 .login-form {
@@ -170,16 +185,16 @@
     padding: 0 1.1rem;
     font: inherit;
     font-size: 0.95rem;
-    color: #2B1B22;
-    background: #fff;
-    border: 2px solid #DEA249;
+    color: var(--lg-text);
+    background: var(--lg-field-bg);
+    border: 2px solid var(--lg-edge);
     border-radius: 14px;
-    box-shadow: inset 5px 0 0 #DEA249;
+    box-shadow: inset 5px 0 0 var(--lg-edge);
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .login-input::placeholder {
-    color: #8A6B75;
+    color: var(--lg-muted);
 }
 .login-input:focus {
     border-color: #CB125E;
@@ -216,7 +231,7 @@
 .login-link {
     font-size: 0.875rem;
     font-weight: 500;
-    color: #CB125E;
+    color: var(--lg-link);
     text-decoration: none;
 }
 .login-link:hover {
@@ -233,7 +248,7 @@
     gap: 0.6rem;
     margin-top: 1.5rem;
     padding-top: 1.25rem;
-    border-top: 1px solid #F3D9C4;
+    border-top: 1px solid var(--lg-line);
 }
 
 .login-social a {
@@ -242,8 +257,8 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    color: #CB125E;
-    background: rgba(203, 18, 94, 0.08);
+    color: var(--lg-link);
+    background: var(--lg-social-bg);
     border-radius: 12px;
     text-decoration: none;
     transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
@@ -275,7 +290,7 @@
     width: 38px;
     height: 38px;
     padding: 0;
-    color: #8A6B75;
+    color: var(--lg-muted);
     cursor: pointer;
     background: transparent;
     border: 0;
@@ -285,8 +300,8 @@
 }
 .login-eye:hover,
 .login-eye:focus-visible {
-    color: #CB125E;
-    background: rgba(203, 18, 94, 0.08);
+    color: var(--lg-link);
+    background: var(--lg-social-bg);
     outline: none;
 }
 
@@ -310,14 +325,14 @@
     border-radius: 12px;
 }
 .login-alert--success {
-    background: #f1f5e2;
-    border: 1px solid #a9bf55;
-    color: #55612b;
+    background: var(--lg-ok-bg);
+    border: 1px solid var(--lg-ok-border);
+    color: var(--lg-ok-text);
 }
 .login-alert--error {
-    background: #fdecea;
-    border: 1px solid #f5c2c0;
-    color: #b3261e;
+    background: var(--lg-bad-bg);
+    border: 1px solid var(--lg-bad-border);
+    color: var(--lg-bad-text);
 }
 
 /* ---------- Responsif ---------- */
@@ -376,3 +391,61 @@
         border-radius: 11px;
     }
 }
+/* ---------- Tombol ganti tema (pojok kanan atas) ---------- */
+
+.login-theme {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    color: #fff;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.login-theme:hover { background: rgba(255, 255, 255, 0.32); transform: translateY(-1px); }
+.login-theme:focus-visible { outline: 3px solid #7FEFBD; outline-offset: 2px; }
+.login-theme svg { width: 20px; height: 20px; }
+.login-theme .icon-sun { display: none; }
+:root[data-theme="dark"] .login-theme .icon-sun { display: block; }
+:root[data-theme="dark"] .login-theme .icon-moon { display: none; }
+
+/* =========================================================
+   MODE GELAP — Space Indigo / Berry Lipstick / Aquamarine
+   ========================================================= */
+:root[data-theme="dark"] .login-body {
+    --lg-bg: linear-gradient(135deg, #211D38 0%, #2E294E 58%, #5A0F45 100%);
+    --lg-card-bg: rgba(46, 41, 78, 0.55);
+    --lg-card-border: rgba(255, 255, 255, 0.16);
+    --lg-panel-bg: rgba(38, 33, 67, 0.94);
+    --lg-field-bg: #211D38;
+    --lg-text: #FFFDE8;
+    --lg-muted: #B7B2D6;
+    --lg-edge: #7FEFBD;
+    --lg-link: #7FEFBD;
+    --lg-line: #4A4575;
+    --lg-social-bg: rgba(127, 239, 189, 0.1);
+    --lg-ok-bg: #1E4B45; --lg-ok-border: #3E8F7B; --lg-ok-text: #7FEFBD;
+    --lg-bad-bg: #4F2340; --lg-bad-border: #7A3358; --lg-bad-text: #FF9DB8;
+}
+:root[data-theme="dark"] .login-body::before { background-image: radial-gradient(circle, rgba(255, 253, 232, 0.35) 2px, transparent 2.5px); }
+:root[data-theme="dark"] .login-body::after  { background-image: radial-gradient(circle, rgba(127, 239, 189, 0.7) 2px, transparent 2.5px); }
+:root[data-theme="dark"] .login-input:focus { border-color: #D90368; box-shadow: inset 5px 0 0 #D90368, 0 0 0 3px rgba(217, 3, 104, 0.35); }
+:root[data-theme="dark"] .login-button { background: linear-gradient(90deg, #F0357F, #D90368); }
+:root[data-theme="dark"] .login-social a:hover { color: #fff; background: linear-gradient(90deg, #F0357F, #D90368); }
+:root[data-theme="dark"] .login-aside {
+    background:
+        radial-gradient(circle at 15% 10%, rgba(217, 3, 104, 0.55), transparent 55%),
+        linear-gradient(160deg, rgba(46, 41, 78, 0.96), rgba(143, 13, 66, 0.85));
+}
+:root[data-theme="dark"] .login-eyebrow { color: #7FEFBD; }
