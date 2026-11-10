@@ -16,10 +16,10 @@
     min-width: 0;
     min-height: 218px;
     padding: 1.35rem;
-    background: #fff;
-    border: 1px solid #eadfe5;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 24px;
-    box-shadow: 0 7px 22px rgba(42, 25, 38, .035);
+    box-shadow: 0 7px 22px rgba(0, 0, 0, .06);
     transition: transform .2s, box-shadow .2s;
 }
 
@@ -50,7 +50,7 @@
 
 .admin-dashboard .admin-metric:hover {
     transform: translateY(-4px);
-    box-shadow: 0 15px 32px rgba(42, 25, 38, .08);
+    box-shadow: 0 15px 32px rgba(0, 0, 0, .14);
 }
 
 .admin-dashboard .admin-metric:hover::after {
@@ -58,13 +58,13 @@
     opacity: .12;
 }
 
-.admin-dashboard .admin-metric--pink { color: #d41463; }
+.admin-dashboard .admin-metric--pink { color: var(--metric-pink); --accent: var(--metric-pink); }
 
-.admin-dashboard .admin-metric--purple { color: #7c3aed; }
+.admin-dashboard .admin-metric--purple { color: var(--metric-purple); --accent: var(--metric-purple); }
 
-.admin-dashboard .admin-metric--blue { color: #2563eb; }
+.admin-dashboard .admin-metric--blue { color: var(--metric-blue); --accent: var(--metric-blue); }
 
-.admin-dashboard .admin-metric--orange { color: #ea580c; }
+.admin-dashboard .admin-metric--orange { color: var(--metric-orange); --accent: var(--metric-orange); }
 
 .admin-dashboard .admin-metric__top {
     position: relative;
@@ -82,7 +82,7 @@
     width: 46px;
     height: 46px;
     border-radius: 14px;
-    background: currentColor;
+    background: var(--accent, currentColor);
     color: #fff;
 }
 
@@ -105,7 +105,7 @@
     padding: 0 .65rem;
     border: 1px solid currentColor;
     border-radius: 999px;
-    background: #fff;
+    background: var(--color-surface);
     font-size: .7rem;
     font-weight: 850;
     letter-spacing: .13em;
@@ -120,7 +120,7 @@
     line-height: .95;
     font-weight: 850;
     letter-spacing: -.055em;
-    color: #241b2f;
+    color: var(--color-text);
 }
 
 .admin-dashboard .admin-metric__label {
@@ -130,7 +130,7 @@
     font-size: .98rem;
     line-height: 1.25;
     font-weight: 850;
-    color: #241b2f;
+    color: var(--color-text);
 }
 
 .admin-dashboard .admin-metric__caption {
@@ -140,7 +140,7 @@
     margin-top: .38rem;
     font-size: .74rem;
     line-height: 1.45;
-    color: #756b78;
+    color: var(--color-muted);
 }
 
 /* Panel utama */
@@ -148,8 +148,8 @@
     position: relative;
     margin-top: 22px;
     padding: 30px 32px 28px;
-    background: #fff;
-    border: 1px solid #eadfd9;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 24px;
     overflow: hidden;
     transition: transform .25s, box-shadow .25s, border-color .25s;
@@ -157,8 +157,8 @@
 
 .admin-dashboard .admin-course-panel:hover {
     transform: translateY(-3px);
-    box-shadow: 0 18px 40px rgba(86, 45, 35, .08);
-    border-color: #e9c4d0;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, .14);
+    border-color: var(--color-line-hover);
 }
 
 .admin-dashboard .admin-course-panel::before {
@@ -171,7 +171,7 @@
 }
 
 .admin-dashboard .admin-course-panel::before {
-    background: linear-gradient(180deg, #c24168, #e879a0);
+    background: linear-gradient(180deg, var(--color-primary), var(--color-card-4-from));
 }
 
 .admin-dashboard .admin-course-header {
@@ -180,12 +180,12 @@
     justify-content: space-between;
     gap: 30px;
     padding-bottom: 22px;
-    border-bottom: 1px solid #eee4df;
+    border-bottom: 1px solid var(--color-line);
 }
 
 .admin-dashboard .admin-course-eyebrow {
     margin: 0 0 7px;
-    color: #9f1239;
+    color: var(--color-crimson);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: .16em;
@@ -193,7 +193,7 @@
 
 .admin-dashboard .admin-course-title {
     margin: 0;
-    color: #172033;
+    color: var(--color-text);
     font-size: 25px;
     line-height: 1.15;
 }
@@ -201,7 +201,7 @@
 .admin-dashboard .admin-course-description {
     max-width: 600px;
     margin: 8px 0 0;
-    color: #7c6f69;
+    color: var(--color-muted);
     font-size: 13px;
     line-height: 1.6;
 }
@@ -218,23 +218,23 @@
     min-height: 90px;
     padding: 14px 17px;
     text-align: right;
-    background: linear-gradient(135deg, #fff1f4 0%, #fce7f3 58%, #f3e8ff 100%);
-    border: 1px solid #efcbd9;
+    background: var(--grad-soft);
+    border: 1px solid var(--color-line);
     border-radius: 15px;
-    box-shadow: 0 3px 10px rgba(159, 18, 57, .035);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, .06);
     transition: transform .22s, box-shadow .22s, background .22s;
 }
 
 .admin-dashboard .admin-course-total:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 10px 24px rgba(159, 18, 57, .1);
-    background: linear-gradient(135deg, #ffe4ec, #fce7f3 58%, #ede9fe);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, .16);
+    background: var(--grad-soft-hover);
 }
 
 .admin-dashboard .admin-course-total span {
     display: block;
     margin-bottom: 7px;
-    color: #8f5265;
+    color: var(--color-muted);
     font-size: 11px;
     line-height: 1.35;
     font-weight: 700;
@@ -242,7 +242,7 @@
 
 .admin-dashboard .admin-course-total strong {
     display: block;
-    color: #9f1239;
+    color: var(--color-crimson);
     font-size: 32px;
     line-height: 1;
     font-weight: 850;
@@ -252,15 +252,15 @@
 
 .admin-dashboard .admin-course-empty {
     padding: 32px 10px;
-    color: #958881;
+    color: var(--color-muted);
     text-align: center;
     font-size: 13px;
 }
 
 /* Ringkasan mata kuliah — palet warna seragam */
 .admin-dashboard .admin-course-panel {
-    background: linear-gradient(135deg, #fff 0%, #fff8fa 58%, #fff4f6 100%);
-    border-color: #ead9e0;
+    background: var(--color-surface);
+    border-color: var(--color-line);
 }
 
 .admin-dashboard .admin-course-columns,
@@ -274,11 +274,11 @@
 .admin-dashboard .admin-course-columns {
     margin-top: 20px;
     padding: 0 4px 11px;
-    border-bottom: 1px solid #eee4df;
+    border-bottom: 1px solid var(--color-line);
 }
 
 .admin-dashboard .admin-course-columns span {
-    color: #9a8d87;
+    color: var(--color-muted);
     font-size: 10px;
     font-weight: 800;
     line-height: 1.2;
@@ -294,7 +294,7 @@
 .admin-dashboard .admin-course-item {
     min-height: 82px;
     padding: 15px 4px;
-    border-bottom: 1px solid #eee4df;
+    border-bottom: 1px solid var(--color-line);
     transition: background .2s, transform .2s, padding-left .2s;
 }
 
@@ -306,8 +306,8 @@
     padding-left: 9px;
     background: linear-gradient(
         90deg,
-        rgba(251, 236, 239, .7),
-        rgba(255, 255, 255, .2)
+        color-mix(in srgb, var(--color-primary) 14%, transparent),
+        transparent
     );
     transform: translateX(4px);
 }
@@ -320,9 +320,9 @@
     display: inline-block;
     margin-bottom: 6px;
     padding: 5px 9px;
-    color: #9f1239;
-    background: #fbecef;
-    border: 1px solid #f0d9de;
+    color: var(--color-crimson);
+    background: var(--color-tint);
+    border: 1px solid var(--color-line);
     border-radius: 7px;
     font-size: 12px;
     font-weight: 800;
@@ -332,7 +332,7 @@
 
 .admin-dashboard .admin-course-name strong {
     display: block;
-    color: #29211e;
+    color: var(--color-text);
     font-size: 14px;
     line-height: 1.4;
     font-weight: 700;
@@ -340,21 +340,21 @@
 
 .admin-dashboard .admin-course-lecturer {
     min-width: 0;
-    color: #514641;
+    color: var(--color-ink-2);
     font-size: 13px;
     line-height: 1.4;
     font-weight: 600;
 }
 
 .admin-dashboard .admin-course-sks {
-    color: #514641;
+    color: var(--color-ink-2);
     font-size: 14px;
     line-height: 1.4;
     font-weight: 700;
 }
 
 .admin-dashboard .admin-course-students {
-    color: #514641;
+    color: var(--color-ink-2);
     font-size: 13px;
     line-height: 1.4;
     font-weight: 700;
@@ -367,9 +367,9 @@
     gap: 10px;
     margin-top: 22px;
     padding: 15px 18px;
-    color: #756863;
-    background: #fff;
-    border: 1px solid #eadfd9;
+    color: var(--color-muted);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 16px;
 }
 
@@ -380,9 +380,9 @@
     width: 22px;
     height: 22px;
     flex: 0 0 22px;
-    color: #9f1239;
-    background: #fff8f9;
-    border: 1px solid #ead9e0;
+    color: var(--color-crimson);
+    background: var(--color-tint);
+    border: 1px solid var(--color-line);
     border-radius: 50%;
     font-size: 11px;
     font-weight: 800;
@@ -452,7 +452,7 @@
     gap: 12px;
     min-height: 190px;
     padding: 18px 4px 0;
-    border-bottom: 1px solid #eee4df;
+    border-bottom: 1px solid var(--color-line);
 }
 
 @media (max-width: 520px) {
