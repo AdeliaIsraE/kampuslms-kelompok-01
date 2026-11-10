@@ -8,156 +8,184 @@
 --}}
 <x-layout title="Edit Mata Kuliah">
 
-    <h1 class="form-title">Edit Mata Kuliah</h1>
+    <div class="admin-form-page">
 
-    @if ($errors->any())
-        <div class="alert alert-error" role="alert">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+        <header class="admin-form-heading">
+            <p class="admin-form-eyebrow">ADMINISTRATOR / KELOLA MATA KULIAH</p>
+            <h1>Edit Mata Kuliah</h1>
+            <p>Perbarui informasi mata kuliah dan dosen pengampunya.</p>
+        </header>
 
-    <section class="form-card">
-
-        <form action="{{ route($routePrefix . '.update', $mataKuliah) }}" method="POST">
-            @csrf
-            @method('PUT')
-
-            {{-- Status --}}
-            <div class="form-group">
-                <label for="status" class="form-label form-label--sans">
-                    Status
-                </label>
-
-                <select name="status" id="status" class="form-control">
-                    <option value="">-- Pilih Status --</option>
-                    @foreach (['draft' => 'Draft', 'active' => 'Active', 'archived' => 'Archived'] as $value => $label)
-                        <option value="{{ $value }}" @selected(old('status', $mataKuliah->status) === $value)>
-                            {{ $label }}
-                        </option>
+        @if ($errors->any())
+            <div class="alert alert-error" role="alert">
+                <strong>Data belum dapat disimpan.</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
                     @endforeach
-                </select>
+                </ul>
+            </div>
+        @endif
 
-                @error('status')
-                    <p class="form-error">{{ $message }}</p>
-                @enderror
+        <section class="form-card admin-form-card">
+
+            <div class="admin-form-card__heading">
+                <div>
+                    <h2>Informasi Mata Kuliah</h2>
+                    <p>Ubah informasi berikut untuk memperbarui mata kuliah ini.</p>
+                </div>
+                <span class="admin-form-tag">EDIT MATA KULIAH</span>
             </div>
 
-            {{-- Kode --}}
-            <div class="form-group">
-                <label for="code" class="form-label form-label--sans">
-                    Kode Mata Kuliah
-                </label>
+            <form
+                action="{{ route($routePrefix . '.update', $mataKuliah) }}"
+                method="POST"
+                class="admin-form-grid"
+            >
+                @csrf
+                @method('PUT')
 
-                <input
-                    type="text"
-                    name="code"
-                    id="code"
-                    value="{{ old('code', $mataKuliah->code) }}"
-                    maxlength="20"
-                    class="form-control"
-                >
+                {{-- Status --}}
+                <div class="form-group">
+                    <label for="status" class="form-label">
+                        Status
+                    </label>
 
-                @error('code')
-                    <p class="form-error">{{ $message }}</p>
-                @enderror
-            </div>
+                    <select name="status" id="status" class="form-control">
+                        <option value="">-- Pilih Status --</option>
+                        @foreach (['draft' => 'Draft', 'active' => 'Active', 'archived' => 'Archived'] as $value => $label)
+                            <option value="{{ $value }}" @selected(old('status', $mataKuliah->status) === $value)>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
 
-            {{-- Nama --}}
-            <div class="form-group">
-                <label for="name" class="form-label form-label--sans">
-                    Nama Mata Kuliah
-                </label>
+                    @error('status')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    value="{{ old('name', $mataKuliah->name) }}"
-                    maxlength="150"
-                    class="form-control"
-                >
+                {{-- Kode --}}
+                <div class="form-group">
+                    <label for="code" class="form-label">
+                        Kode Mata Kuliah
+                    </label>
 
-                @error('name')
-                    <p class="form-error">{{ $message }}</p>
-                @enderror
-            </div>
+                    <input
+                        type="text"
+                        name="code"
+                        id="code"
+                        value="{{ old('code', $mataKuliah->code) }}"
+                        maxlength="20"
+                        class="form-control"
+                        placeholder="Contoh: IF101"
+                    >
 
-            {{-- SKS --}}
-            <div class="form-group">
-                <label for="sks" class="form-label form-label--sans">
-                    SKS
-                </label>
+                    @error('code')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <input
-                    type="number"
-                    name="sks"
-                    id="sks"
-                    min="1"
-                    max="6"
-                    value="{{ old('sks', $mataKuliah->sks) }}"
-                    class="form-control"
-                >
+                {{-- Nama --}}
+                <div class="form-group admin-form-field--full">
+                    <label for="name" class="form-label">
+                        Nama Mata Kuliah
+                    </label>
 
-                @error('sks')
-                    <p class="form-error">{{ $message }}</p>
-                @enderror
-            </div>
+                    <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        value="{{ old('name', $mataKuliah->name) }}"
+                        maxlength="150"
+                        class="form-control"
+                        placeholder="Masukkan nama mata kuliah"
+                    >
 
-            {{-- Dosen pengampu --}}
-            <div class="form-group">
-                <label for="lecturer_id" class="form-label form-label--sans">
-                    Dosen Pengampu
-                </label>
+                    @error('name')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <select name="lecturer_id" id="lecturer_id" class="form-control">
-                    <option value="">-- Pilih Dosen --</option>
-                    @foreach ($lecturers as $lecturer)
-                        <option value="{{ $lecturer->id }}"
-                            @selected((int) old('lecturer_id', $mataKuliah->lecturer_id) === $lecturer->id)>
-                            {{ $lecturer->name }} ({{ $lecturer->nim_nip }})
-                        </option>
-                    @endforeach
-                </select>
+                {{-- SKS --}}
+                <div class="form-group">
+                    <label for="sks" class="form-label">
+                        SKS
+                    </label>
 
-                @error('lecturer_id')
-                    <p class="form-error">{{ $message }}</p>
-                @enderror
-            </div>
+                    <input
+                        type="number"
+                        name="sks"
+                        id="sks"
+                        min="1"
+                        max="6"
+                        value="{{ old('sks', $mataKuliah->sks) }}"
+                        class="form-control"
+                        placeholder="1 - 6"
+                    >
 
-            {{-- Deskripsi --}}
-            <div class="form-group form-group--lg">
-                <label for="description" class="form-label form-label--sans">
-                    Deskripsi
-                </label>
+                    @error('sks')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <textarea
-                    name="description"
-                    id="description"
-                    rows="4"
-                    class="form-control"
-                >{{ old('description', $mataKuliah->description) }}</textarea>
+                {{-- Dosen pengampu --}}
+                <div class="form-group">
+                    <label for="lecturer_id" class="form-label">
+                        Dosen Pengampu
+                    </label>
 
-                @error('description')
-                    <p class="form-error">{{ $message }}</p>
-                @enderror
-            </div>
+                    <select name="lecturer_id" id="lecturer_id" class="form-control">
+                        <option value="">-- Pilih Dosen --</option>
+                        @foreach ($lecturers as $lecturer)
+                            <option value="{{ $lecturer->id }}"
+                                @selected((int) old('lecturer_id', $mataKuliah->lecturer_id) === $lecturer->id)>
+                                {{ $lecturer->name }} ({{ $lecturer->nim_nip }})
+                            </option>
+                        @endforeach
+                    </select>
 
-            {{-- Tombol --}}
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    Update
-                </button>
+                    @error('lecturer_id')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <a href="{{ route($routePrefix . '.index') }}" class="btn btn-secondary">
-                    Batal
-                </a>
-            </div>
+                {{-- Deskripsi --}}
+                <div class="form-group admin-form-field--full">
+                    <label for="description" class="form-label">
+                        Deskripsi
+                    </label>
 
-        </form>
-    </section>
+                    <textarea
+                        name="description"
+                        id="description"
+                        rows="4"
+                        class="form-control"
+                        placeholder="Tambahkan deskripsi singkat mengenai mata kuliah..."
+                    >{{ old('description', $mataKuliah->description) }}</textarea>
+
+                    @error('description')
+                        <p class="form-error">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Tombol --}}
+                <div class="form-actions admin-form-actions admin-form-field--full">
+
+                    <button type="submit" class="btn btn-primary">
+                        Simpan Perubahan
+                    </button>
+
+                    <a href="{{ route($routePrefix . '.index') }}" class="btn btn-secondary">
+                        Batal
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
 
 </x-layout>
