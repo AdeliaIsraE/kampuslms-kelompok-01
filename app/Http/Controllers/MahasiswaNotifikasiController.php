@@ -8,8 +8,10 @@ use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
@@ -64,22 +66,40 @@ class MahasiswaNotifikasiController extends Controller
             default => null,
         };
 
-        /* Jumlah per tab (mengikuti periode) */
+        /* Jumlah per tab (mengikuti periode): SATU query dengan 4 subquery count */
+        $hitung = DB::query();
+        foreach (array_keys(self::TAB) as $kunci) {
+            $hitung->selectSub(
+                $this->hitungSub($this->terapkanTab($this->dasar($user, $sejak), $kunci)),
+                "n_{$kunci}"
+            );
+        }
+        $hasilHitung = $hitung->first();
+
         $tabs = [];
         foreach (self::TAB as $kunci => $label) {
             $tabs[$kunci] = [
                 'label' => $label,
-                'jumlah' => $this->terapkanTab($this->dasar($user, $sejak), $kunci)->count(),
+                'jumlah' => (int) $hasilHitung->{"n_{$kunci}"},
             ];
         }
 
-        /* Daftar halaman ini */
-        $halaman = $this->terapkanTab($this->dasar($user, $sejak), $tab)
-            ->paginate(self::PER_PAGE)
-            ->withQueryString();
+        /* Daftar halaman ini. Total sudah diketahui dari hitungan tab di atas,
+           jadi tidak perlu query COUNT kedua seperti yang dilakukan paginate(). */
+        $total = $tabs[$tab]['jumlah'];
+        $halamanAktif = LengthAwarePaginator::resolveCurrentPage();
 
-        $tugas = $this->infoTugas($halaman->getCollection());
-        $halaman->through(fn ($n) => $this->bentukItem($n, $tugas));
+        $notifikasi = $this->terapkanTab($this->dasar($user, $sejak), $tab)
+            ->forPage($halamanAktif, self::PER_PAGE)
+            ->get();
+
+        $tugas = $this->infoTugas($notifikasi);
+        $item = $notifikasi->map(fn ($n) => $this->bentukItem($n, $tugas));
+
+        $halaman = (new LengthAwarePaginator($item, $total, self::PER_PAGE, $halamanAktif, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+            'pageName' => 'page',
+        ]))->withQueryString();
 
         $grupHari = $halaman->getCollection()
             ->groupBy(fn (array $i) => $i['at']->toDateString())
@@ -90,12 +110,10 @@ class MahasiswaNotifikasiController extends Controller
             ])
             ->values();
 
-        $mkIds = $user->courses()->pluck('courses.id');
-
         return view('mahasiswa.notifikasi', [
-            'ringkasan' => $this->ringkasan($user, $mkIds),
-            'tenggat' => $this->tenggatTerdekat($user, $mkIds),
-            'progres' => $this->progresPengumpulan($user, $mkIds),
+            'ringkasan' => $this->ringkasan($user),
+            'tenggat' => $this->tenggatTerdekat($user),
+            'progres' => $this->progresPengumpulan($user),
             'tab' => $tab,
             'tabs' => $tabs,
             'periode' => $periode,
@@ -224,23 +242,47 @@ class MahasiswaNotifikasiController extends Controller
     | Kartu ringkasan (tidak ikut filter)
     |--------------------------------------------------------------------------
     */
-    private function ringkasan(User $user, Collection $mkIds): array
+    private function ringkasan(User $user): array
     {
+        // SATU query dengan 5 subquery count, bukan 5 query terpisah.
+        $r = DB::query()
+            ->selectSub($this->hitungSub($user->unreadNotifications()), 'belum')
+            ->selectSub($this->hitungSub($user->notifications()), 'total')
+            ->selectSub($this->hitungSub($user->notifications()->where('created_at', '>=', now()->startOfDay())), 'hari_ini')
+            ->selectSub($this->belumDikumpulkan($user)->selectRaw('count(*)'), 'perlu_kumpul')
+            ->selectSub(Submission::where('user_id', $user->id)->whereHas('grade')->selectRaw('count(*)'), 'nilai')
+            ->first();
+
         return [
-            'belum' => $user->unreadNotifications()->count(),
-            'total' => $user->notifications()->count(),
-            'hariIni' => $user->notifications()->where('created_at', '>=', now()->startOfDay())->count(),
-            'perluKumpul' => $this->belumDikumpulkan($user, $mkIds)->count(),
-            'nilai' => Submission::where('user_id', $user->id)->whereHas('grade')->count(),
+            'belum' => (int) $r->belum,
+            'total' => (int) $r->total,
+            'hariIni' => (int) $r->hari_ini,
+            'perluKumpul' => (int) $r->perlu_kumpul,
+            'nilai' => (int) $r->nilai,
         ];
     }
 
+    /**
+     * Ubah relasi notifikasi menjadi subquery COUNT. Urutan bawaan relasi
+     * (latest) dibuang agar aman untuk query agregat di MySQL strict.
+     */
+    private function hitungSub($relasi)
+    {
+        return $relasi->getQuery()->reorder()->selectRaw('count(*)');
+    }
+
+    /** Subquery id mata kuliah yang diikuti mahasiswa ini (dipakai di whereIn, tanpa query terpisah). */
+    private function mkDiikuti(User $user)
+    {
+        return DB::table('course_user')->select('course_id')->where('user_id', $user->id);
+    }
+
     /** Tugas terbit di mata kuliah yang diikuti, belum lewat batas waktu, dan belum dikumpulkan mahasiswa ini. */
-    private function belumDikumpulkan(User $user, Collection $mkIds)
+    private function belumDikumpulkan(User $user)
     {
         return Assignment::query()
             ->join('courses', 'courses.id', '=', 'assignments.course_id')
-            ->whereIn('assignments.course_id', $mkIds)
+            ->whereIn('assignments.course_id', $this->mkDiikuti($user))
             ->where('assignments.status', 'published')
             ->where('assignments.due_at', '>=', now())
             ->whereNotExists(function ($sub) use ($user) {
@@ -256,9 +298,9 @@ class MahasiswaNotifikasiController extends Controller
     | Batas waktu terdekat (kolom samping)
     |--------------------------------------------------------------------------
     */
-    private function tenggatTerdekat(User $user, Collection $mkIds): Collection
+    private function tenggatTerdekat(User $user): Collection
     {
-        return $this->belumDikumpulkan($user, $mkIds)
+        return $this->belumDikumpulkan($user)
             ->select(
                 'assignments.id',
                 'assignments.title',
@@ -296,35 +338,30 @@ class MahasiswaNotifikasiController extends Controller
     | Progres pengumpulan per mata kuliah (yang paling banyak belum dikumpulkan di atas)
     |--------------------------------------------------------------------------
     */
-    private function progresPengumpulan(User $user, Collection $mkIds): Collection
+    private function progresPengumpulan(User $user): Collection
     {
-        if ($mkIds->isEmpty()) {
-            return collect();
-        }
-
-        $totalPerMk = Assignment::query()
-            ->whereIn('course_id', $mkIds)
-            ->where('status', 'published')
-            ->selectRaw('course_id as cid, count(*) as total')
-            ->groupBy('course_id')
-            ->pluck('total', 'cid');
-
-        $kumpulPerMk = Submission::query()
-            ->join('assignments', 'assignments.id', '=', 'submissions.assignment_id')
-            ->where('submissions.user_id', $user->id)
-            ->where('assignments.status', 'published')
-            ->whereIn('assignments.course_id', $mkIds)
-            ->selectRaw('assignments.course_id as cid, count(distinct submissions.assignment_id) as total')
-            ->groupBy('assignments.course_id')
-            ->pluck('total', 'cid');
-
+        // SATU query: total tugas terbit dan jumlah yang sudah dikumpulkan mahasiswa ini
+        // dihitung lewat subquery per mata kuliah, bukan tiga query terpisah.
         return Course::query()
-            ->whereIn('id', $mkIds)
-            ->orderBy('name')
-            ->get(['id', 'code', 'name'])
-            ->map(function ($c) use ($totalPerMk, $kumpulPerMk) {
-                $total = (int) ($totalPerMk[$c->id] ?? 0);
-                $kumpul = min($total, (int) ($kumpulPerMk[$c->id] ?? 0));
+            ->select(['courses.id', 'courses.code', 'courses.name'])
+            ->whereIn('courses.id', $this->mkDiikuti($user))
+            ->addSelect([
+                'total_tugas' => Assignment::query()
+                    ->selectRaw('count(*)')
+                    ->whereColumn('assignments.course_id', 'courses.id')
+                    ->where('assignments.status', 'published'),
+                'total_kumpul' => Submission::query()
+                    ->selectRaw('count(distinct submissions.assignment_id)')
+                    ->join('assignments as a_kumpul', 'a_kumpul.id', '=', 'submissions.assignment_id')
+                    ->where('submissions.user_id', $user->id)
+                    ->where('a_kumpul.status', 'published')
+                    ->whereColumn('a_kumpul.course_id', 'courses.id'),
+            ])
+            ->orderBy('courses.name')
+            ->get()
+            ->map(function ($c) {
+                $total = (int) $c->total_tugas;
+                $kumpul = min($total, (int) $c->total_kumpul);
                 $persen = $total > 0 ? (int) round(($kumpul / $total) * 100) : 0;
 
                 return [

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -67,10 +68,21 @@ class AdminNotifikasiController extends Controller
         | Jumlah per jenis (dipakai tab dan pagination)
         |--------------------------------------------------------------------------
         */
-        $nMateri = $this->materiBase($sejak, $q)->count();
-        $nTugas = $this->tugasBase($sejak, $q)->count();
-        $nKumpul = $this->kumpulBase($sejak, $q)->count();
-        $nTerlambat = $this->kumpulBase($sejak, $q)->where('submissions.is_late', true)->count();
+        // SATU query dengan 4 subquery count, bukan 4 query terpisah.
+        $hitung = DB::query()
+            ->selectSub($this->materiBase($sejak, $q)->selectRaw('count(*)'), 'n_materi')
+            ->selectSub($this->tugasBase($sejak, $q)->selectRaw('count(*)'), 'n_tugas')
+            ->selectSub($this->kumpulBase($sejak, $q)->selectRaw('count(*)'), 'n_kumpul')
+            ->selectSub(
+                $this->kumpulBase($sejak, $q)->where('submissions.is_late', true)->selectRaw('count(*)'),
+                'n_terlambat'
+            )
+            ->first();
+
+        $nMateri = (int) $hitung->n_materi;
+        $nTugas = (int) $hitung->n_tugas;
+        $nKumpul = (int) $hitung->n_kumpul;
+        $nTerlambat = (int) $hitung->n_terlambat;
 
         $jumlah = [
             'semua' => $nMateri + $nTugas + $nKumpul,
@@ -392,17 +404,28 @@ class AdminNotifikasiController extends Controller
         $sejak = now()->subDays(6)->startOfDay();
         $hariIni = now()->startOfDay();
 
-        $materi = Material::where('created_at', '>=', $sejak)->count();
-        $materiBerkas = Material::where('created_at', '>=', $sejak)->where('type', 'file')->count();
-        $materiHariIni = Material::where('created_at', '>=', $hariIni)->count();
+        // SATU query dengan 10 subquery scalar, bukan 10 query count() terpisah.
+        $r = DB::query()
+            ->selectSub(Material::where('created_at', '>=', $sejak)->selectRaw('count(*)'), 'materi')
+            ->selectSub(Material::where('created_at', '>=', $sejak)->where('type', 'file')->selectRaw('count(*)'), 'materi_berkas')
+            ->selectSub(Material::where('created_at', '>=', $hariIni)->selectRaw('count(*)'), 'materi_hari_ini')
+            ->selectSub(Assignment::where('status', 'published')->where('created_at', '>=', $sejak)->selectRaw('count(*)'), 'tugas')
+            ->selectSub(Assignment::where('status', 'published')->where('created_at', '>=', $hariIni)->selectRaw('count(*)'), 'tugas_hari_ini')
+            ->selectSub(Assignment::where('status', 'draft')->selectRaw('count(*)'), 'tugas_draf')
+            ->selectSub(Submission::where('submitted_at', '>=', $sejak)->selectRaw('count(*)'), 'kumpul')
+            ->selectSub(Submission::where('submitted_at', '>=', $sejak)->where('is_late', true)->selectRaw('count(*)'), 'kumpul_telat')
+            ->selectSub(Submission::where('submitted_at', '>=', $hariIni)->selectRaw('count(*)'), 'kumpul_hari_ini')
+            ->selectSub(Submission::whereDoesntHave('grade')->selectRaw('count(*)'), 'menunggu_nilai')
+            ->first();
 
-        $tugas = Assignment::where('status', 'published')->where('created_at', '>=', $sejak)->count();
-        $tugasHariIni = Assignment::where('status', 'published')->where('created_at', '>=', $hariIni)->count();
-        $tugasDraf = Assignment::where('status', 'draft')->count();
-
-        $kumpul = Submission::where('submitted_at', '>=', $sejak)->count();
-        $kumpulTelat = Submission::where('submitted_at', '>=', $sejak)->where('is_late', true)->count();
-        $kumpulHariIni = Submission::where('submitted_at', '>=', $hariIni)->count();
+        $materi = (int) $r->materi;
+        $materiBerkas = (int) $r->materi_berkas;
+        $materiHariIni = (int) $r->materi_hari_ini;
+        $tugas = (int) $r->tugas;
+        $tugasHariIni = (int) $r->tugas_hari_ini;
+        $kumpul = (int) $r->kumpul;
+        $kumpulTelat = (int) $r->kumpul_telat;
+        $kumpulHariIni = (int) $r->kumpul_hari_ini;
 
         return [
             'materi' => $materi,
@@ -411,11 +434,11 @@ class AdminNotifikasiController extends Controller
             'materiHariIni' => $materiHariIni,
             'tugas' => $tugas,
             'tugasHariIni' => $tugasHariIni,
-            'tugasDraf' => $tugasDraf,
+            'tugasDraf' => (int) $r->tugas_draf,
             'kumpul' => $kumpul,
             'kumpulTelat' => $kumpulTelat,
             'tepatWaktu' => $kumpul > 0 ? (int) round((($kumpul - $kumpulTelat) / $kumpul) * 100) : null,
-            'menungguNilai' => Submission::whereDoesntHave('grade')->count(),
+            'menungguNilai' => (int) $r->menunggu_nilai,
             'aktivitasHariIni' => $materiHariIni + $tugasHariIni + $kumpulHariIni,
         ];
     }
@@ -428,25 +451,33 @@ class AdminNotifikasiController extends Controller
     */
     private function mataKuliahAktif(): Collection
     {
-        $tugasTerbit = Assignment::where('status', 'published')
-            ->selectRaw('course_id, count(*) as total')
-            ->groupBy('course_id')
-            ->pluck('total', 'course_id');
-
-        $pengumpulan = Submission::query()
-            ->join('assignments', 'assignments.id', '=', 'submissions.assignment_id')
-            ->selectRaw('assignments.course_id as course_id, count(*) as total')
-            ->groupBy('assignments.course_id')
-            ->pluck('total', 'course_id');
-
+        // SATU query: jumlah tugas terbit dan jumlah pengumpulan per mata kuliah
+        // dihitung lewat subquery, bukan dua query terpisah lalu digabung di PHP.
         return Course::query()
-    ->select(['id', 'code', 'name'])
-    ->withCount('students')
-    ->whereIn('id', $tugasTerbit->keys())
-    ->get()
-            ->map(function ($c) use ($tugasTerbit, $pengumpulan) {
-                $target = (int) $c->students_count * (int) $tugasTerbit[$c->id];
-                $masuk = (int) ($pengumpulan[$c->id] ?? 0);
+            ->select(['courses.id', 'courses.code', 'courses.name'])
+            ->withCount('students')
+            ->addSelect([
+                'tugas_terbit' => Assignment::query()
+                    ->selectRaw('count(*)')
+                    ->whereColumn('assignments.course_id', 'courses.id')
+                    ->where('assignments.status', 'published'),
+                'pengumpulan_total' => Submission::query()
+                    ->selectRaw('count(*)')
+                    ->join('assignments as a_kumpul', 'a_kumpul.id', '=', 'submissions.assignment_id')
+                    ->whereColumn('a_kumpul.course_id', 'courses.id'),
+            ])
+            // Hanya mata kuliah yang punya minimal satu tugas terbit.
+            ->whereExists(function ($w) {
+                $w->selectRaw('1')
+                    ->from('assignments as a_terbit')
+                    ->whereColumn('a_terbit.course_id', 'courses.id')
+                    ->where('a_terbit.status', 'published');
+            })
+            ->get()
+            ->map(function ($c) {
+                $tugasTerbit = (int) $c->tugas_terbit;
+                $target = (int) $c->students_count * $tugasTerbit;
+                $masuk = (int) $c->pengumpulan_total;
                 $persen = $target > 0 ? min(100, (int) round(($masuk / $target) * 100)) : 0;
 
                 return [
@@ -455,7 +486,7 @@ class AdminNotifikasiController extends Controller
                     'nama' => $c->name,
                     'persen' => $persen,
                     'masuk' => $masuk,
-                    'tugas' => (int) $tugasTerbit[$c->id],
+                    'tugas' => $tugasTerbit,
                     'mahasiswa' => (int) $c->students_count,
                     'level' => $persen >= 75 ? 'tinggi' : ($persen >= 50 ? 'sedang' : 'rendah'),
                 ];
