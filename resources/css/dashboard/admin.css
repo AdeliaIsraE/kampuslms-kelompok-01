@@ -1,9 +1,8 @@
+
 /* =========================================================
    admin.css — dashboard admin
-   Sisa pemisahan: pembungkus .admin-dashboard, blok header lama
-   (.admin-dashboard__*), dan catatan. Kartu metrik ada di
-   components/dashboard.css. Kartu Pengelolaan Tugas sudah pindah ke
-   dashboard/task-panel.css (dipakai dashboard dosen).
+   Pembungkus dashboard, header, dan catatan khusus admin.
+   Kartu metrik tetap berada di components/dashboard.css.
    ========================================================= */
 
 /* =========================================================
@@ -12,7 +11,15 @@
 .admin-dashboard {
     width: 100%;
     max-width: 1180px;
+    min-width: 0;
     margin: 0 auto;
+}
+
+/* Mencegah elemen anak menyebabkan halaman melebar */
+.admin-dashboard *,
+.admin-dashboard *::before,
+.admin-dashboard *::after {
+    box-sizing: border-box;
 }
 
 /* =========================================================
@@ -24,6 +31,11 @@
     justify-content: space-between;
     gap: 2rem;
     margin-bottom: 1.75rem;
+    min-width: 0;
+}
+
+.admin-dashboard__header > * {
+    min-width: 0;
 }
 
 .admin-dashboard__eyebrow {
@@ -42,6 +54,7 @@
     font-weight: 850;
     letter-spacing: -0.035em;
     color: var(--color-text, #241b2f);
+    overflow-wrap: anywhere;
 }
 
 .admin-dashboard__subtitle {
@@ -49,6 +62,7 @@
     font-size: 0.92rem;
     line-height: 1.5;
     color: var(--color-muted, #756b78);
+    overflow-wrap: anywhere;
 }
 
 .admin-dashboard__date {
@@ -63,11 +77,13 @@
     font-size: 0.74rem;
     font-weight: 700;
     color: var(--color-muted, #756b78);
+    max-width: 100%;
 }
 
 .admin-dashboard__date-dot {
     width: 7px;
     height: 7px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: #22c55e;
     box-shadow: 0 0 0 4px #dcfce7;
@@ -79,74 +95,126 @@
 .admin-dashboard-note {
     display: flex;
     align-items: center;
-
     gap: 0.65rem;
-
     margin-top: 0.9rem;
-
     padding: 0 0.25rem;
+    min-width: 0;
 }
 
 .admin-dashboard-note__mark {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     width: 18px;
     height: 18px;
-
     flex-shrink: 0;
-
     border: 1px solid var(--color-border, #eadfe5);
-
     border-radius: 50%;
-
     font-size: 0.64rem;
     font-weight: 800;
-
     color: var(--color-muted, #756b78);
 }
 
 .admin-dashboard-note p {
     margin: 0;
-
+    min-width: 0;
     font-size: 0.7rem;
-
+    line-height: 1.5;
     color: var(--color-muted, #756b78);
+    overflow-wrap: anywhere;
 }
 
 /* =========================================================
-   RESPONSIVE (khusus admin)
+   RESPONSIVE — TABLET
    ========================================================= */
 @media (max-width: 800px) {
+    .admin-dashboard {
+        max-width: 100%;
+    }
+
     .admin-dashboard__header {
         align-items: flex-start;
-
         flex-direction: column;
-
         gap: 1rem;
+        margin-bottom: 1.5rem;
     }
 
     .admin-dashboard__title {
         font-size: 1.8rem;
     }
+
+    .admin-dashboard__date {
+        align-self: flex-start;
+    }
 }
 
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
 @media (max-width: 640px) {
     .admin-dashboard {
+        width: 100%;
         max-width: 100%;
+    }
+
+    .admin-dashboard__header {
+        gap: 0.85rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .admin-dashboard__eyebrow {
+        font-size: 0.62rem;
     }
 
     .admin-dashboard__title {
         font-size: 1.55rem;
+        line-height: 1.15;
     }
 
     .admin-dashboard__subtitle {
+        margin-top: 0.45rem;
         font-size: 0.84rem;
+    }
+
+    .admin-dashboard__date {
+        padding: 0.5rem 0.7rem;
+        font-size: 0.7rem;
+        white-space: normal;
+    }
+
+    .admin-dashboard-note {
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
+    }
+
+    .admin-dashboard-note p {
+        font-size: 0.68rem;
     }
 }
 
-/* Supaya filter kotak cari bisa menyembunyikan elemen yang punya display:flex/grid */
+/* =========================================================
+   RESPONSIVE — SMALL MOBILE
+   ========================================================= */
+@media (max-width: 380px) {
+    .admin-dashboard__title {
+        font-size: 1.4rem;
+    }
+
+    .admin-dashboard__subtitle {
+        font-size: 0.8rem;
+    }
+
+    .admin-dashboard__date {
+        font-size: 0.66rem;
+    }
+}
+
+/* =========================================================
+   SEARCH FILTER
+   Memastikan elemen tersembunyi tidak muncul kembali
+   akibat aturan display flex atau grid.
+   ========================================================= */
 .admin-dashboard [hidden] {
     display: none !important;
 }
