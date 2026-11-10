@@ -23,7 +23,7 @@ FROM php:8.4-apache
 #    pdo_mysql -> MySQL Railway | bcmath -> dipakai Laravel
 #    (mbstring, tokenizer, ctype, fileinfo, dom sudah bawaan image)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git unzip libzip-dev \
+        git unzip libzip-dev supervisor \
     && docker-php-ext-install pdo_mysql bcmath zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -75,4 +75,9 @@ RUN composer dump-autoload --optimize --no-dev --no-interaction \
 # 8. Script startup: pastikan hanya mpm_prefork aktif, atur PORT dinamis Railway, clear cache, jalankan migrasi & seed, lalu jalankan Apache
 EXPOSE 80 8080
 
-CMD ["sh", "-c", "rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker.* && export PORT=\"${PORT:-8080}\" && sed -i \"s/Listen .*/Listen $PORT/\" /etc/apache2/ports.conf && sed -i \"s/<VirtualHost \\*:.*>/<VirtualHost \\*:$PORT>/\" /etc/apache2/sites-available/000-default.conf && php artisan config:clear && php artisan route:clear && php artisan view:clear && (php artisan migrate --force || true) && (php artisan db:seed --force || true) && exec apache2-foreground"]
+COPY docker/supervisord.conf /etc/supervisor/supervisord.conf
+COPY docker/start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+EXPOSE 8080
+CMD ["/usr/local/bin/start.sh"]
