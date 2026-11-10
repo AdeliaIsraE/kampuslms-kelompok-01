@@ -1,15 +1,27 @@
-{{-- Variabel dari AssignmentController@create: $course, $role --}}
+
 <x-layout title="Tambah Tugas">
 
-    <a href="{{ route($role . '.mata-kuliah.tugas.index', $course) }}" class="mk-back-link">
-        &larr; Kembali ke Daftar Tugas
-    </a>
+    <div class="admin-form-page">
 
-    <h1 class="mk-page-title mk-page-title--spaced">Tambah Tugas &mdash; {{ $course->name }}</h1>
+        <a href="{{ route($role . '.mata-kuliah.tugas.index', $course) }}" class="mk-back-link">
+            &larr; Kembali ke Daftar Tugas
+        </a>
 
-    @include('assignments._form', [
-        'action'    => route($role . '.mata-kuliah.tugas.store', $course),
-        'cancelUrl' => route($role . '.mata-kuliah.tugas.index', $course),
-    ])
+        <div class="admin-form-heading">
+            <p class="admin-form-eyebrow">PENGELOLAAN AKADEMIK</p>
+            <h1>Tambah Tugas</h1>
+            <p>
+                Buat tugas baru untuk mata kuliah {{ $course->name }}.
+                Lengkapi informasi tugas agar mahasiswa dapat memahami
+                instruksi dan batas waktu pengumpulan.
+            </p>
+        </div>
+
+        @include('assignments._form', [
+            'action'    => route($role . '.mata-kuliah.tugas.store', $course),
+            'cancelUrl' => route($role . '.mata-kuliah.tugas.index', $course),
+        ])
+
+    </div>
 
 </x-layout>
