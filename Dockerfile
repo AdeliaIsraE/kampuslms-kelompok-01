@@ -27,6 +27,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-install pdo_mysql bcmath zip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# 1b. Batas upload PHP (default image hanya 2M, sedangkan validasi app = 10 MB)
+RUN { \
+      echo "upload_max_filesize = 20M"; \
+      echo "post_max_size = 25M"; \
+      echo "memory_limit = 256M"; \
+      echo "max_execution_time = 120"; \
+    } > /usr/local/etc/php/conf.d/uploads.ini
+
 # 2. Apache: mod_rewrite, satu MPM saja, .htaccess aktif,
 #    document root ke /public, port dibaca dari variabel PORT
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
