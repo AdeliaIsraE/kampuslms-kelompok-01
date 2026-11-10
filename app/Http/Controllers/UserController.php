@@ -28,7 +28,7 @@ class UserController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('users.index', compact('users'));
+        return view('Users.index', compact('users'));      // ← diubah
     }
 
     public function create()
@@ -55,12 +55,12 @@ class UserController extends Controller
     {
         $user->loadCount(['taughtCourses', 'courses']);
 
-        return view('users.show', compact('user'));
+        return view('Users.show', compact('user'));         // ← diubah
     }
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        return view('Users.edit', compact('user'));         // ← diubah
     }
 
     public function update(UpdateUserRequest $request, User $user)
