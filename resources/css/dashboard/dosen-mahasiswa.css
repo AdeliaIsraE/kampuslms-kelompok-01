@@ -785,3 +785,44 @@ a.dash-hero__bell { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
     .home-overview .so-drop, .so-chevron, .home-overview .so-body .semester-course { transition: none; }
 }
+/* =========================================================
+   RESPONSIVE TAMBAHAN — dashboard dosen & mahasiswa di HP
+   (banner, kartu, Semester overview, kalender)
+   ========================================================= */
+@media (max-width: 640px) {
+
+    /* banner */
+    .dash-hero { margin-bottom: 1.25rem; }
+    .dash-hero__top { margin-bottom: 0.8rem; }
+    .dash-hero__actions { gap: 0.6rem; }
+    .dash-hero__bell { width: 40px; height: 40px; }
+    .dash-hero__avatar { width: 42px; height: 42px; font-size: 0.92rem; }
+    .dash-hero__search { padding: 0.7rem 1rem; }
+    /* 16px: mencegah iPhone memperbesar halaman saat kotak cari diketuk */
+    .dash-hero__search input { font-size: 1rem; }
+
+    /* kartu .dash-card */
+    .dash-card__icon { margin-bottom: 1.25rem; }
+    .dash-card__number { font-size: 5rem; }
+
+    /* Semester overview (margin-top aslinya di-inline di komponen, jadi perlu !important) */
+    .home-overview { margin-top: 1.5rem !important; }
+    .home-overview .so-summary { padding: 0.8rem 0.9rem; gap: 0.7rem; }
+    .home-overview .so-label { overflow-wrap: anywhere; }
+    .home-overview .so-body { padding: 0.8rem 0.9rem 1rem; }
+    .home-overview .semester-course { gap: 0.6rem; }
+    .home-overview .semester-course-name { min-width: 0; overflow-wrap: anywhere; }
+    .home-overview .semester-course-star { flex-shrink: 0; }
+}
+
+@media (max-width: 400px) {
+    .dash-hero__title { font-size: 1.35rem; }
+    .dash-hero__hello { font-size: 1.05rem; }
+}
+
+/* Layar sentuh: matikan efek hover yang "menempel" setelah diketuk */
+@media (hover: none) {
+    .dash-card:hover { transform: none; box-shadow: none; }
+    .home-overview .so-body .semester-course:hover { transform: none; }
+    .dash-hero__bell:hover { transform: none; }
+}
