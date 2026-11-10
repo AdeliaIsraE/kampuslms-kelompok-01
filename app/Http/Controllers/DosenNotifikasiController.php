@@ -7,8 +7,10 @@ use App\Models\Course;
 use App\Models\Submission;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -79,11 +81,21 @@ class DosenNotifikasiController extends Controller
         | Jumlah per tab (mengikuti pencarian, mata kuliah, dan periode)
         |--------------------------------------------------------------------------
         */
+        // SATU query dengan 4 subquery count, bukan 4 query terpisah.
+        $hitung = DB::query();
+        foreach (array_keys(self::TAB) as $kunci) {
+            $hitung->selectSub(
+                $this->terapkanTab($this->kumpulBase($mkIds, $sejak, $q, $mk), $kunci)->selectRaw('count(*)'),
+                "n_{$kunci}"
+            );
+        }
+        $hasilHitung = $hitung->first();
+
         $tabs = [];
         foreach (self::TAB as $kunci => $label) {
             $tabs[$kunci] = [
                 'label' => $label,
-                'jumlah' => $this->terapkanTab($this->kumpulBase($mkIds, $sejak, $q, $mk), $kunci)->count(),
+                'jumlah' => (int) $hasilHitung->{"n_{$kunci}"},
             ];
         }
 
@@ -92,7 +104,12 @@ class DosenNotifikasiController extends Controller
         | Feed halaman ini
         |--------------------------------------------------------------------------
         */
-        $halaman = $this->terapkanTab($this->kumpulBase($mkIds, $sejak, $q, $mk), $tab)
+        // Total sudah diketahui dari hitungan tab di atas, jadi tidak perlu
+        // query COUNT kedua seperti yang dilakukan paginate().
+        $total = $tabs[$tab]['jumlah'];
+        $halamanAktif = LengthAwarePaginator::resolveCurrentPage();
+
+        $baris = $this->terapkanTab($this->kumpulBase($mkIds, $sejak, $q, $mk), $tab)
             ->select(
                 'submissions.*',
                 'assignments.title as assignment_title',
@@ -105,9 +122,14 @@ class DosenNotifikasiController extends Controller
             ->selectRaw('(select max(version_number) from submission_revisions where submission_revisions.submission_id = submissions.id) as versi')
             ->withExists('grade as sudah_dinilai')
             ->orderByDesc('submissions.submitted_at')
-            ->paginate(self::PER_PAGE)
-            ->withQueryString()
-            ->through(fn ($r) => $this->bentukItem($r));
+            ->forPage($halamanAktif, self::PER_PAGE)
+            ->get()
+            ->map(fn ($r) => $this->bentukItem($r));
+
+        $halaman = (new LengthAwarePaginator($baris, $total, self::PER_PAGE, $halamanAktif, [
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
+            'pageName' => 'page',
+        ]))->withQueryString();
 
         $grupHari = $halaman->getCollection()
             ->groupBy(fn (array $i) => $i['at']->toDateString())
@@ -228,24 +250,37 @@ class DosenNotifikasiController extends Controller
     private function ringkasan(array $mkIds): array
     {
         $dasar = fn () => $this->kumpulBase($mkIds, null, '', null);
-
-        $total = $dasar()->count();
-        $belum = $dasar()->whereDoesntHave('grade')->count();
-        $belumTelat = $dasar()->whereDoesntHave('grade')->where('submissions.is_late', true)->count();
-
         $hariIni = now()->startOfDay();
-        $kumpulHariIni = $dasar()->where('submissions.submitted_at', '>=', $hariIni)->count();
-        $telatHariIni = $dasar()->where('submissions.submitted_at', '>=', $hariIni)
-            ->where('submissions.is_late', true)->count();
 
-        $tugasAktif = Assignment::whereIn('course_id', $mkIds)
+        $tugasAktif = fn () => Assignment::whereIn('course_id', $mkIds)
             ->where('status', 'published')
-            ->where('due_at', '>=', now())
-            ->pluck('course_id');
+            ->where('due_at', '>=', now());
+
+        // SATU query dengan 7 subquery scalar, bukan 5 count() + 1 pluck terpisah.
+        $r = DB::query()
+            ->selectSub($dasar()->selectRaw('count(*)'), 'total')
+            ->selectSub($dasar()->whereDoesntHave('grade')->selectRaw('count(*)'), 'belum')
+            ->selectSub(
+                $dasar()->whereDoesntHave('grade')->where('submissions.is_late', true)->selectRaw('count(*)'),
+                'belum_telat'
+            )
+            ->selectSub($dasar()->where('submissions.submitted_at', '>=', $hariIni)->selectRaw('count(*)'), 'kumpul_hari_ini')
+            ->selectSub(
+                $dasar()->where('submissions.submitted_at', '>=', $hariIni)->where('submissions.is_late', true)->selectRaw('count(*)'),
+                'telat_hari_ini'
+            )
+            ->selectSub($tugasAktif()->selectRaw('count(*)'), 'tugas_aktif')
+            ->selectSub($tugasAktif()->selectRaw('count(distinct course_id)'), 'tugas_aktif_mk')
+            ->first();
+
+        $total = (int) $r->total;
+        $belum = (int) $r->belum;
+        $kumpulHariIni = (int) $r->kumpul_hari_ini;
+        $telatHariIni = (int) $r->telat_hari_ini;
 
         return [
             'menunggu' => $belum,
-            'menungguTelat' => $belumTelat,
+            'menungguTelat' => (int) $r->belum_telat,
             'kumpulHariIni' => $kumpulHariIni,
             'telatHariIni' => $telatHariIni,
             'tepatHariIni' => $kumpulHariIni > 0
@@ -254,8 +289,8 @@ class DosenNotifikasiController extends Controller
             'total' => $total,
             'dinilai' => $total - $belum,
             'persenDinilai' => $total > 0 ? (int) round((($total - $belum) / $total) * 100) : 0,
-            'tugasAktif' => $tugasAktif->count(),
-            'tugasAktifMk' => $tugasAktif->unique()->count(),
+            'tugasAktif' => (int) $r->tugas_aktif,
+            'tugasAktifMk' => (int) $r->tugas_aktif_mk,
         ];
     }
 
@@ -266,23 +301,20 @@ class DosenNotifikasiController extends Controller
     */
     private function antreanPenilaian(Collection $mataKuliah, array $mkIds): Collection
     {
-        $dasar = fn () => $this->kumpulBase($mkIds, null, '', null);
-
-        $totalPerMk = $dasar()
-            ->selectRaw('assignments.course_id as cid, count(*) as total')
+        // SATU query: total pengumpulan dan yang belum dinilai per mata kuliah
+        // dihitung bersamaan (sum kondisional), bukan dua query groupBy terpisah.
+        $perMk = $this->kumpulBase($mkIds, null, '', null)
+            ->selectRaw('assignments.course_id as cid')
+            ->selectRaw('count(*) as total')
+            ->selectRaw('sum(case when exists (select 1 from grades where grades.submission_id = submissions.id) then 0 else 1 end) as belum')
             ->groupBy('assignments.course_id')
-            ->pluck('total', 'cid');
-
-        $belumPerMk = $dasar()
-            ->whereDoesntHave('grade')
-            ->selectRaw('assignments.course_id as cid, count(*) as total')
-            ->groupBy('assignments.course_id')
-            ->pluck('total', 'cid');
+            ->get()
+            ->keyBy('cid');
 
         return $mataKuliah
-            ->map(function ($c) use ($totalPerMk, $belumPerMk) {
-                $total = (int) ($totalPerMk[$c->id] ?? 0);
-                $belum = (int) ($belumPerMk[$c->id] ?? 0);
+            ->map(function ($c) use ($perMk) {
+                $total = (int) ($perMk[$c->id]->total ?? 0);
+                $belum = (int) ($perMk[$c->id]->belum ?? 0);
                 $persen = $total > 0 ? (int) round((($total - $belum) / $total) * 100) : 0;
 
                 return [
@@ -309,10 +341,9 @@ class DosenNotifikasiController extends Controller
     */
     private function tenggatTerdekat(array $mkIds): Collection
     {
-        $jumlahMahasiswa = Course::whereIn('id', $mkIds)
-            ->withCount('students')
-            ->pluck('students_count', 'id');
-
+        // SATU query: jumlah mahasiswa terdaftar ikut dihitung lewat subquery,
+        // bukan query withCount terpisah. Mahasiswa yang sudah dihapus (soft delete)
+        // tetap tidak dihitung, sama seperti relasi students().
         return Assignment::query()
             ->where('assignments.status', 'published')
             ->where('assignments.due_at', '>=', now())
@@ -326,10 +357,11 @@ class DosenNotifikasiController extends Controller
                 'courses.code as course_code'
             )
             ->selectRaw('(select count(*) from submissions where submissions.assignment_id = assignments.id) as terkumpul')
+            ->selectRaw('(select count(*) from users inner join course_user on users.id = course_user.user_id where course_user.course_id = assignments.course_id and users.deleted_at is null) as jumlah_mahasiswa')
             ->orderBy('assignments.due_at')
             ->limit(4)
             ->get()
-            ->map(function ($r) use ($jumlahMahasiswa) {
+            ->map(function ($r) {
                 $due = Carbon::parse($r->due_at)->locale('id');
                 $detik = max(0, $due->getTimestamp() - now()->getTimestamp());
                 $hari = intdiv($detik, 86400);
@@ -341,7 +373,7 @@ class DosenNotifikasiController extends Controller
                     'judul' => $r->title,
                     'kode' => $r->course_code,
                     'terkumpul' => (int) $r->terkumpul,
-                    'mahasiswa' => (int) ($jumlahMahasiswa[$r->course_id] ?? 0),
+                    'mahasiswa' => (int) $r->jumlah_mahasiswa,
                     'tanggal' => $due->translatedFormat('j M'),
                     'jam' => $due->format('H:i'),
                     'sisa' => $hari > 0

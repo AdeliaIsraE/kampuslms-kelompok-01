@@ -12,8 +12,8 @@
     @php
         $anggota = [
             ['nama' => 'Ade Putri Amanda', 'role' => 'Front-End Developer', 'nim' => '10241002'],
-            ['nama' => 'Adelia Isra Ekaputri', 'role' => 'Full-Stack Developer', 'nim' => '10241004'],
             ['nama' => 'Adelia Cyntia Renata', 'role' => 'Front-End Developer', 'nim' => '10241003'],
+            ['nama' => 'Adelia Isra Ekaputri', 'role' => 'Full-Stack Developer', 'nim' => '10241004'],
             ['nama' => 'Alya Auralia', 'role' => 'Back-End Developer', 'nim' => '10241008'],
             ['nama' => 'Andika Putra Pratama', 'role' => 'Back-End Developer', 'nim' => '10241010'],
         ];
