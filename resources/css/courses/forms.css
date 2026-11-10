@@ -1,5 +1,10 @@
+
 /* =========================================================
-   forms.css — komponen form (create/edit di courses/ dan Users/)
+   forms.css — komponen form umum dan form admin
+   ========================================================= */
+
+/* =========================================================
+   FORM UMUM
    ========================================================= */
 
 .form-title {
@@ -7,7 +12,7 @@
     margin-bottom: 1.5rem;
 }
 
-/* --- kotak pesan error validasi di atas form --- */
+/* Pesan error validasi */
 .alert-error {
     background: #fdecea;
     border: 1px solid #f5c2c0;
@@ -16,13 +21,14 @@
     margin-bottom: 1.5rem;
     font-family: Arial, sans-serif;
 }
+
 .alert-error ul {
     margin: 0;
     padding-left: 1.2rem;
     color: #b3261e;
 }
 
-/* --- kartu pembungkus form --- */
+/* Kartu pembungkus form */
 .form-card {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -31,15 +37,16 @@
     max-width: 600px;
 }
 
-/* kartu form yang lebih sempit (lupa & atur ulang kata sandi) */
+/* Kartu form autentikasi */
 .auth-card {
     max-width: 480px;
 }
 
-/* --- satu baris field (label + input + pesan error) --- */
+/* Field */
 .form-group {
     margin-bottom: 1rem;
 }
+
 .form-group--lg {
     margin-bottom: 1.5rem;
 }
@@ -48,7 +55,7 @@
     display: block;
     margin-bottom: 0.4rem;
 }
-/* label dengan font Arial (dipakai di halaman edit) */
+
 .form-label--sans {
     font-family: Arial, sans-serif;
 }
@@ -60,8 +67,8 @@
     border-radius: 4px;
 }
 
-/* teks bantuan kecil di bawah input */
 .form-hint {
+    display: block;
     margin: 0.3rem 0 0;
     font-size: 0.8rem;
     color: var(--color-ink-soft);
@@ -73,21 +80,24 @@
     margin-top: 0.3rem;
 }
 
-/* --- tombol --- */
+/* Tombol */
 .form-actions {
     display: flex;
     gap: 0.75rem;
 }
+
 .btn {
     padding: 0.6rem 1.2rem;
     border-radius: 4px;
 }
+
 .btn-primary {
     border: none;
     background: var(--color-card-1-from);
     color: #fff;
     cursor: pointer;
 }
+
 .btn-secondary {
     border: 1px solid var(--color-border);
     text-decoration: none;
@@ -95,9 +105,309 @@
 }
 
 /* =========================================================
-   KARTU AUTENTIKASI (lupa & atur ulang kata sandi)
-   Hanya memengaruhi halaman yang memakai .auth-card;
-   form create/edit di courses/ dan users/ tidak berubah.
+   FORM ADMIN
+   Hanya digunakan oleh halaman tambah pengguna
+   dan tambah mata kuliah.
+   ========================================================= */
+
+.admin-form-page {
+    width: 100%;
+    max-width: 820px;
+    margin: 0 auto;
+}
+
+/* Judul halaman */
+
+.admin-form-heading {
+    margin-bottom: 1.75rem;
+}
+
+.admin-form-eyebrow {
+    margin: 0 0 0.65rem;
+    color: var(--color-primary, #d41463);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+}
+
+.admin-form-heading h1 {
+    margin: 0;
+    color: var(--color-ink, #241b2f);
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 850;
+    letter-spacing: -0.035em;
+}
+
+.admin-form-heading > p:last-child {
+    margin: 0.65rem 0 0;
+    color: var(--color-ink-soft, #756b78);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+/* Kartu form */
+
+.admin-form-card {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: none;
+    padding: 2rem;
+    background: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-border, #eadfe5);
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(42, 25, 38, 0.055);
+}
+
+.admin-form-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(
+        90deg,
+        var(--color-card-4-from, #7c3aed),
+        var(--color-primary, #d41463)
+    );
+}
+
+/* Bagian judul di dalam kartu */
+
+.admin-form-card__heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1.4rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border, #eadfe5);
+}
+
+.admin-form-card__heading h2 {
+    margin: 0;
+    color: var(--color-ink, #241b2f);
+    font-size: 1.15rem;
+    font-weight: 800;
+}
+
+.admin-form-card__heading p {
+    margin: 0.4rem 0 0;
+    color: var(--color-ink-soft, #756b78);
+    font-size: 0.84rem;
+    line-height: 1.5;
+}
+
+.admin-form-tag {
+    flex-shrink: 0;
+    padding: 0.45rem 0.7rem;
+    color: var(--color-primary, #d41463);
+    background: color-mix(
+        in srgb,
+        var(--color-primary, #d41463) 8%,
+        white
+    );
+    border: 1px solid color-mix(
+        in srgb,
+        var(--color-primary, #d41463) 18%,
+        white
+    );
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+}
+
+/* Susunan field */
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.15rem 1.25rem;
+}
+
+.admin-form-grid .form-group {
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+.admin-form-field--full {
+    grid-column: 1 / -1;
+}
+
+/* Label */
+
+.admin-form-page .form-label {
+    margin-bottom: 0.55rem;
+    color: var(--color-ink, #241b2f);
+    font-size: 0.85rem;
+    font-weight: 750;
+}
+
+/* Input, select, dan textarea */
+
+.admin-form-page .form-control {
+    display: block;
+    width: 100%;
+    min-height: 46px;
+    padding: 0.75rem 0.9rem;
+    color: var(--color-ink, #241b2f);
+    background: #fff;
+    border: 1.5px solid var(--color-border, #eadfe5);
+    border-radius: 11px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.admin-form-page .form-control::placeholder {
+    color: #a69aa5;
+}
+
+.admin-form-page .form-control:hover {
+    border-color: color-mix(
+        in srgb,
+        var(--color-primary, #d41463) 35%,
+        var(--color-border, #eadfe5)
+    );
+}
+
+.admin-form-page .form-control:focus {
+    border-color: var(--color-primary, #d41463);
+    box-shadow: 0 0 0 4px color-mix(
+        in srgb,
+        var(--color-primary, #d41463) 12%,
+        transparent
+    );
+}
+
+.admin-form-page textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.admin-form-page select.form-control {
+    cursor: pointer;
+}
+
+/* Input password */
+
+.admin-form-page .password-field .form-control {
+    padding-right: 2.75rem;
+}
+
+/* Petunjuk dan error */
+
+.admin-form-page .form-hint {
+    margin-top: 0.5rem;
+    font-size: 0.77rem;
+    line-height: 1.5;
+}
+
+.admin-form-page .form-error {
+    margin: 0.45rem 0 0;
+    font-size: 0.8rem;
+}
+
+/* Pesan validasi */
+
+.admin-form-page .alert-error {
+    padding: 1.1rem 1.25rem;
+    border-radius: 14px;
+    line-height: 1.6;
+}
+
+.admin-form-page .alert-error strong {
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+/* Tombol form admin */
+
+.admin-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding-top: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.admin-form-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.75rem 1.4rem;
+    border-radius: 11px;
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 750;
+    text-decoration: none;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.admin-form-actions .btn-primary {
+    color: #fff;
+    background: linear-gradient(
+        100deg,
+        var(--color-card-4-from, #7c3aed),
+        var(--color-primary, #d41463)
+    );
+    border: none;
+    box-shadow: 0 6px 15px color-mix(
+        in srgb,
+        var(--color-primary, #d41463) 20%,
+        transparent
+    );
+}
+
+.admin-form-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px color-mix(
+        in srgb,
+        var(--color-primary, #d41463) 28%,
+        transparent
+    );
+}
+
+.admin-form-actions .btn-secondary {
+    color: var(--color-ink, #241b2f);
+    background: #fff;
+    border: 1px solid var(--color-border, #eadfe5);
+}
+
+.admin-form-actions .btn-secondary:hover {
+    color: var(--color-primary, #d41463);
+    background: color-mix(
+        in srgb,
+        var(--color-primary, #d41463) 5%,
+        white
+    );
+    border-color: color-mix(
+        in srgb,
+        var(--color-primary, #d41463) 30%,
+        var(--color-border, #eadfe5)
+    );
+}
+
+.admin-form-actions .btn:active {
+    transform: translateY(0);
+}
+
+/* =========================================================
+   KARTU AUTENTIKASI
+   Lupa dan atur ulang kata sandi.
    ========================================================= */
 
 .auth-wrap {
@@ -106,7 +416,6 @@
     margin: 2rem auto;
 }
 
-/* pesan error di atas kartu, selebar kartu */
 .auth-wrap > .alert-error {
     border-radius: 16px;
     margin-bottom: 1rem;
@@ -121,38 +430,67 @@
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 32px;
-    box-shadow: 0 18px 40px color-mix(in srgb, var(--color-primary) 10%, transparent);
+    box-shadow: 0 18px 40px color-mix(
+        in srgb,
+        var(--color-primary) 10%,
+        transparent
+    );
 }
 
-/* garis aksen di atas + lingkaran dekorasi, seperti kartu dashboard */
 .auth-card::before {
     content: "";
     position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 5px;
-    background: linear-gradient(90deg, var(--color-card-4-from), var(--color-primary));
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(
+        90deg,
+        var(--color-card-4-from),
+        var(--color-primary)
+    );
 }
+
 .auth-card::after {
     content: "";
     position: absolute;
-    right: -60px; bottom: -70px;
-    width: 190px; height: 190px;
+    right: -60px;
+    bottom: -70px;
+    width: 190px;
+    height: 190px;
     border-radius: 50%;
-    background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+    background: color-mix(
+        in srgb,
+        var(--color-primary) 6%,
+        transparent
+    );
     pointer-events: none;
 }
-.auth-card > * { position: relative; z-index: 1; }
+
+.auth-card > * {
+    position: relative;
+    z-index: 1;
+}
 
 .auth-card__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 64px; height: 64px;
+    width: 64px;
+    height: 64px;
     margin: 0 auto 1.1rem;
     color: #fff;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-card-4-from));
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-card-4-from)
+    );
     border-radius: 20px;
-    box-shadow: 0 8px 18px color-mix(in srgb, var(--color-primary) 28%, transparent);
+    box-shadow: 0 8px 18px color-mix(
+        in srgb,
+        var(--color-primary) 28%,
+        transparent
+    );
 }
 
 .auth-card .form-title {
@@ -169,9 +507,13 @@
     color: var(--color-ink-soft);
 }
 
-.auth-card form { text-align: left; }
+.auth-card form {
+    text-align: left;
+}
 
-.auth-card .form-group--lg { margin-bottom: 1.5rem; }
+.auth-card .form-group--lg {
+    margin-bottom: 1.5rem;
+}
 
 .auth-card .form-label {
     margin-bottom: 0.5rem;
@@ -190,11 +532,18 @@
     border: 1.5px solid var(--color-accent);
     border-radius: 14px;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
+
 .auth-card .form-control:focus {
     border-color: var(--color-primary);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary) 14%, transparent);
+    box-shadow: 0 0 0 4px color-mix(
+        in srgb,
+        var(--color-primary) 14%,
+        transparent
+    );
 }
 
 .auth-card .form-actions {
@@ -213,18 +562,34 @@
     text-decoration: none;
     border-radius: 14px;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
 .auth-card .btn-primary {
     color: #fff;
-    background: linear-gradient(90deg, var(--color-card-4-from), var(--color-primary));
+    background: linear-gradient(
+        90deg,
+        var(--color-card-4-from),
+        var(--color-primary)
+    );
     border: none;
-    box-shadow: 0 10px 22px color-mix(in srgb, var(--color-primary) 25%, transparent);
+    box-shadow: 0 10px 22px color-mix(
+        in srgb,
+        var(--color-primary) 25%,
+        transparent
+    );
 }
+
 .auth-card .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 28px color-mix(in srgb, var(--color-primary) 32%, transparent);
+    box-shadow: 0 14px 28px color-mix(
+        in srgb,
+        var(--color-primary) 32%,
+        transparent
+    );
 }
 
 .auth-card .btn-secondary {
@@ -232,27 +597,28 @@
     background: #fff;
     border: 1.5px solid var(--color-border);
 }
-.auth-card .btn-secondary:hover {
-    background: color-mix(in srgb, var(--color-primary) 6%, white);
-    border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
-}
 
-@media (max-width: 520px) {
-    .auth-wrap { margin: 1rem auto; }
-    .auth-card { padding: 1.9rem 1.35rem 1.6rem; border-radius: 26px; }
+.auth-card .btn-secondary:hover {
+    background: color-mix(
+        in srgb,
+        var(--color-primary) 6%,
+        white
+    );
+    border-color: color-mix(
+        in srgb,
+        var(--color-primary) 30%,
+        var(--color-border)
+    );
 }
 
 /* =========================================================
-   Input kata sandi dengan tombol tampilkan/sembunyikan
-   Tempel di AKHIR resources/css/courses/forms.css
-   (dipakai oleh components/password-input.blade.php)
+   INPUT PASSWORD DENGAN TOMBOL TAMPILKAN/SEMBUNYIKAN
    ========================================================= */
 
 .password-field {
     position: relative;
 }
 
-/* ruang di kanan input supaya teks tidak tertutup ikon */
 .password-field .form-control {
     padding-right: 2.75rem;
 }
@@ -289,7 +655,6 @@
     height: 20px;
 }
 
-/* ikon: mata biasa saat tersembunyi, mata dicoret saat terlihat */
 .password-toggle .icon-eye-off {
     display: none;
 }
@@ -302,8 +667,105 @@
     display: block;
 }
 
-/* Edge/IE punya ikon "mata" bawaan sendiri; sembunyikan agar tidak dobel */
 .password-field input[type="password"]::-ms-reveal,
 .password-field input[type="password"]::-ms-clear {
     display: none;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 640px) {
+
+    .admin-form-page {
+        max-width: 100%;
+    }
+
+    .admin-form-heading {
+        margin-bottom: 1.25rem;
+    }
+
+    .admin-form-heading h1 {
+        font-size: 1.65rem;
+    }
+
+    .admin-form-heading > p:last-child {
+        font-size: 0.84rem;
+    }
+
+    .admin-form-card {
+        padding: 1.4rem 1.15rem;
+        border-radius: 20px;
+    }
+
+    .admin-form-card__heading {
+        flex-direction: column;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+        padding-bottom: 1.1rem;
+    }
+
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .admin-form-field--full {
+        grid-column: auto;
+    }
+
+    .admin-form-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.65rem;
+    }
+
+    .admin-form-actions .btn {
+        width: 100%;
+    }
+
+    .admin-form-tag {
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .admin-form-card {
+        padding: 1.2rem 0.9rem;
+    }
+
+    .admin-form-heading h1 {
+        font-size: 1.45rem;
+    }
+
+    .admin-form-actions .btn {
+        padding: 0.75rem 1rem;
+    }
+}
+
+@media (max-width: 520px) {
+
+    .auth-wrap {
+        margin: 1rem auto;
+    }
+
+    .auth-card {
+        padding: 1.9rem 1.35rem 1.6rem;
+        border-radius: 26px;
+    }
+}
+
+/* Kurangi animasi jika pengguna memilih reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .admin-form-page *,
+    .admin-form-page *::before,
+    .admin-form-page *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
 }
