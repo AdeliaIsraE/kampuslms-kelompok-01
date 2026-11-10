@@ -71,6 +71,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/pengumpulan/{submission}/unduh', [SubmissionController::class, 'download'])
         ->name('pengumpulan.unduh');
 
+    // Unduh berkas pengumpulan versi LAMA (riwayat revisi).
+    // scopeBindings(): {revision} hanya di-resolve dari revisi milik {submission}.
+    // SubmissionController@downloadRevision juga memeriksa kepemilikannya.
+    Route::get('/pengumpulan/{submission}/revisi/{revision}/unduh', [SubmissionController::class, 'downloadRevision'])
+        ->scopeBindings()
+        ->name('pengumpulan.revisi.unduh');
+
     // Unduh berkas materi (disimpan di disk privat). Semua peran yang login
     // boleh mencoba; hak akses sebenarnya diperiksa di MaterialController@download.
     Route::get('/materi/{material}/unduh', [MaterialController::class, 'download'])
@@ -104,6 +111,18 @@ Route::middleware('auth')->group(function () {
             // Nama lengkap: admin.notifikasi
             Route::get('/notifikasi', [AdminNotifikasiController::class, 'index'])
                 ->name('notifikasi');
+
+            // Tandai semua aktivitas sampai saat ini sebagai sudah dibaca.
+            // Nama lengkap: admin.notifikasi.dibaca-semua
+            Route::post('/notifikasi/dibaca-semua', [AdminNotifikasiController::class, 'dibacaSemua'])
+                ->name('notifikasi.dibaca-semua');
+
+            // Tandai satu aktivitas sebagai sudah dibaca (aktivitas lalu hilang dari daftar).
+            // Nama lengkap: admin.notifikasi.dibaca
+            Route::post('/notifikasi/{jenis}/{id}/dibaca', [AdminNotifikasiController::class, 'dibaca'])
+                ->whereIn('jenis', ['materi', 'tugas', 'pengumpulan'])
+                ->whereNumber('id')
+                ->name('notifikasi.dibaca');
 
             Route::resource('users', UserController::class);
 
@@ -160,6 +179,15 @@ Route::middleware('auth')->group(function () {
             // Nama lengkap: dosen.notifikasi
             Route::get('/notifikasi', [DosenNotifikasiController::class, 'index'])
                 ->name('notifikasi');
+
+            // Tandai pengumpulan sebagai sudah dibaca (hilang dari daftar).
+            // Nama lengkap: dosen.notifikasi.dibaca-semua, dosen.notifikasi.dibaca
+            Route::post('/notifikasi/dibaca-semua', [DosenNotifikasiController::class, 'dibacaSemua'])
+                ->name('notifikasi.dibaca-semua');
+
+            Route::post('/notifikasi/{id}/dibaca', [DosenNotifikasiController::class, 'dibaca'])
+                ->whereNumber('id')
+                ->name('notifikasi.dibaca');
 
             // Dosen hanya melihat MK yang diampu. Mengubah MK = admin saja
             // (CoursePolicy::update), jadi edit/update tidak dibuka di sini.

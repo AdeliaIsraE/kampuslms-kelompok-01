@@ -7,6 +7,7 @@ use App\Models\Material;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -14,8 +15,10 @@ use Illuminate\Support\Facades\DB;
  * angka awal yang dirender server di komponen notification-bell, dan jawaban
  * endpoint polling (NotifikasiController@belumDibaca), jadi keduanya selalu sama.
  *
- * - admin     : aktivitas hari ini (materi diunggah + tugas terbit + pengumpulan masuk)
- * - dosen     : pengumpulan di mata kuliah yang diampu yang belum dinilai
+ * - admin     : aktivitas (materi diunggah + tugas terbit + pengumpulan masuk) yang belum
+ *               ditandai dibaca, satu per satu atau sekaligus (users.notifications_read_at)
+ * - dosen     : pengumpulan di mata kuliah yang diampu yang belum dinilai dan belum
+ *               ditandai dibaca (users.notifications_read_at + notifikasi_admin_dibaca)
  * - mahasiswa : notifikasi database yang belum dibaca (tabel notifications)
  */
 class JumlahNotifikasi
@@ -23,10 +26,86 @@ class JumlahNotifikasi
     public static function untuk(User $user): int
     {
         return match ($user->role) {
-            'admin' => self::aktivitasHariIni(),
+            'admin' => self::adminBelumDibaca($user),
             'dosen' => self::menungguNilai($user),
             default => $user->unreadNotifications()->count(),
         };
+    }
+
+    /**
+     * Batas "sudah dibaca" untuk admin: aktivitas dengan waktu <= batas ini
+     * sudah ditandai dibaca lewat "Tandai semua dibaca" dan tidak ditampilkan
+     * lagi. null berarti belum pernah ditandai, jadi semua aktivitas tampil.
+     */
+    public static function batasDibacaAdmin(User $admin): ?Carbon
+    {
+        return $admin->notifications_read_at;
+    }
+
+    /**
+     * Waktu yang harus disimpan saat admin menekan "Tandai semua dibaca":
+     * sekarang, atau waktu aktivitas terbaru bila lebih baru dari sekarang
+     * (mis. data contoh dengan tanggal di masa depan). Tanpa ini, aktivitas
+     * bertanggal lebih baru dari "sekarang" tidak pernah ikut terbaca.
+     */
+    public static function batasTandaiSemuaAdmin(): Carbon
+    {
+        $r = DB::query()
+            ->selectSub(Material::selectRaw('max(created_at)'), 'materi')
+            ->selectSub(Assignment::where('status', 'published')->selectRaw('max(created_at)'), 'tugas')
+            ->selectSub(Submission::selectRaw('max(submitted_at)'), 'pengumpulan')
+            ->first();
+
+        $batas = now();
+
+        foreach ([$r->materi, $r->tugas, $r->pengumpulan] as $waktu) {
+            if ($waktu && ($t = Carbon::parse($waktu))->greaterThan($batas)) {
+                $batas = $t;
+            }
+        }
+
+        return $batas;
+    }
+
+    /**
+     * Buang aktivitas yang sudah ditandai dibaca satu per satu oleh admin ini
+     * (tabel notifikasi_admin_dibaca). Dipakai feed, hitungan tab, dan lonceng
+     * supaya ketiganya selalu sepakat.
+     *
+     * @param  string  $jenis    'materi' | 'tugas' | 'pengumpulan'
+     * @param  string  $kolomId  kolom id sumbernya, mis. 'materials.id'
+     */
+    public static function tanpaDitandai(Builder $query, int $adminId, string $jenis, string $kolomId): Builder
+    {
+        return $query->whereNotExists(function ($w) use ($adminId, $jenis, $kolomId) {
+            $w->selectRaw('1')
+                ->from('notifikasi_admin_dibaca as nd')
+                ->where('nd.user_id', $adminId)
+                ->where('nd.jenis', $jenis)
+                ->whereColumn('nd.item_id', $kolomId);
+        });
+    }
+
+    /** Semua aktivitas yang masih tampil di Pusat Notifikasi admin (belum ditandai dibaca), dalam SATU query. */
+    public static function adminBelumDibaca(User $admin): int
+    {
+        $batas = self::batasDibacaAdmin($admin);
+
+        $query = DB::query()
+            ->selectSub(
+                self::tanpaDitandai(Material::query()->when($batas, fn ($q) => $q->where('created_at', '>', $batas)), $admin->id, 'materi', 'materials.id')->selectRaw('count(*)'),
+                'aktivitas_materi'
+            )
+            ->selectSub(
+                self::tanpaDitandai(Assignment::where('status', 'published')->when($batas, fn ($q) => $q->where('created_at', '>', $batas)), $admin->id, 'tugas', 'assignments.id')->selectRaw('count(*)'),
+                'aktivitas_tugas'
+            )
+            ->selectSub(
+                self::tanpaDitandai(Submission::query()->when($batas, fn ($q) => $q->where('submitted_at', '>', $batas)), $admin->id, 'pengumpulan', 'submissions.id')->selectRaw('count(*)'),
+                'aktivitas_pengumpulan'
+            );
+
+        return self::jumlahkan($query->first());
     }
 
     /**
@@ -72,14 +151,43 @@ class JumlahNotifikasi
             + (int) $baris->aktivitas_pengumpulan;
     }
 
-    /** Sama dengan kartu "Menunggu Penilaian" di halaman Notifikasi dosen. */
+    /**
+     * Pengumpulan di mata kuliah dosen yang belum dinilai DAN masih tampil di
+     * Pusat Notifikasi (belum ditandai dibaca, satu per satu atau sekaligus).
+     * Kartu "Perlu Dinilai" di halaman itu tetap menghitung semuanya.
+     */
     private static function menungguNilai(User $dosen): int
     {
-        return Submission::query()
+        $batas = $dosen->notifications_read_at;
+
+        return self::tanpaDitandai(
+            Submission::query()
+                ->join('assignments', 'assignments.id', '=', 'submissions.assignment_id')
+                ->join('courses', 'courses.id', '=', 'assignments.course_id')
+                ->where('courses.lecturer_id', $dosen->id)
+                ->whereDoesntHave('grade')
+                ->when($batas, fn ($q) => $q->where('submissions.submitted_at', '>', $batas)),
+            $dosen->id,
+            'pengumpulan',
+            'submissions.id'
+        )->count();
+    }
+
+    /**
+     * Waktu yang disimpan saat dosen menekan "Tandai semua dibaca": sekarang,
+     * atau waktu pengumpulan terbaru di mata kuliahnya bila lebih baru dari
+     * sekarang (data contoh bertanggal masa depan).
+     */
+    public static function batasTandaiSemuaDosen(User $dosen): Carbon
+    {
+        $terbaru = Submission::query()
             ->join('assignments', 'assignments.id', '=', 'submissions.assignment_id')
             ->join('courses', 'courses.id', '=', 'assignments.course_id')
             ->where('courses.lecturer_id', $dosen->id)
-            ->whereDoesntHave('grade')
-            ->count();
+            ->max('submissions.submitted_at');
+
+        $batas = now();
+
+        return $terbaru && ($t = Carbon::parse($terbaru))->greaterThan($batas) ? $t : $batas;
     }
 }
