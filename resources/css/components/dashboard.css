@@ -825,3 +825,36 @@ html { scroll-behavior: smooth; }
     html { scroll-behavior: auto; }
     .admin-metric:target { animation: none; outline: 3px solid var(--color-accent); }
 }
+/* =========================================================
+   RESPONSIVE TAMBAHAN — kartu metrik di HP
+   ========================================================= */
+@media (max-width: 640px) {
+    .admin-metric {
+        min-height: 0;
+    }
+
+    .admin-metric__number {
+        font-size: 2.25rem;
+    }
+
+    .admin-metric__caption {
+        max-width: 100%;
+    }
+}
+
+/* Layar sentuh: efek hover (kartu terangkat) tidak dipakai karena
+   di HP efeknya "menempel" setelah kartu diketuk. */
+@media (hover: none) {
+    .admin-metric:hover {
+        transform: none;
+        box-shadow: 0 7px 22px rgba(42, 25, 38, 0.035);
+    }
+
+    .admin-metric:hover::after,
+    .admin-metric:hover .admin-metric__icon,
+    .admin-metric:hover .admin-metric__icon svg,
+    .admin-metric:hover .admin-metric__index,
+    .admin-metric:hover .admin-metric__number {
+        transform: none;
+    }
+}

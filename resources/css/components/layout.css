@@ -275,3 +275,92 @@ header.app-header nav a.nav-bell.active {
     border: 2px solid var(--color-primary-dark);
     border-radius: 999px;
 }
+
+/* =========================================================
+   RESPONSIVE — navbar & kerangka halaman (tablet/HP)
+   Tanpa JavaScript dan tanpa mengubah layout.blade.php:
+   di layar kecil, brand di baris pertama dan menu di baris kedua
+   (menu berbentuk pil, lonceng + Keluar rata kanan).
+   ========================================================= */
+@media (max-width: 760px) {
+    header.app-header {
+        flex-wrap: wrap;
+        align-items: center;
+        row-gap: 0.55rem;
+        padding: 0.8rem 1rem;
+    }
+
+    header.app-header .brand {
+        flex: 1 1 100%;
+        font-size: 1.05rem;
+    }
+
+    header.app-header nav {
+        flex: 1 1 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+        min-width: 0;
+    }
+
+    header.app-header nav a {
+        margin-left: 0;
+        padding: 0.5rem 0.7rem;
+        font-size: 0.88rem;
+        white-space: nowrap;
+        border-radius: 999px;
+    }
+
+    header.app-header nav a:hover {
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* menu aktif: pil terang, bukan garis bawah */
+    header.app-header nav a.active {
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* lonceng + Keluar didorong ke kanan */
+    header.app-header nav a.nav-bell {
+        margin-left: auto;
+        padding: 0;
+        width: 40px;
+        height: 40px;
+    }
+
+    .logout-form {
+        margin-left: auto;
+    }
+
+    /* kalau ada lonceng, lonceng yang mendorong ke kanan; Keluar menempel di sebelahnya */
+    header.app-header nav a.nav-bell ~ .logout-form {
+        margin-left: 0;
+    }
+
+    .logout-btn {
+        padding: 0.5rem 0.7rem;
+        font-size: 0.88rem;
+        border-radius: 999px;
+    }
+
+    .logout-btn:hover,
+    .logout-btn:focus-visible {
+        text-decoration: none;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    main {
+        padding: 1.5rem 1rem 3rem;
+    }
+}
+
+/* HP kecil (mis. 360px): pil sedikit dirapatkan supaya muat satu baris */
+@media (max-width: 400px) {
+    header.app-header nav a,
+    .logout-btn {
+        padding: 0.5rem 0.55rem;
+        font-size: 0.84rem;
+    }
+}
