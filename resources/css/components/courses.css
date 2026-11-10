@@ -9,11 +9,11 @@
     --mk-maroon-dark: #700b34;
     --mk-magenta: #c2185b;
     --mk-pink: #f8dce7;
-    --mk-cream: #fff8f2;
+    --mk-cream: var(--color-bg);
     --mk-white: #ffffff;
-    --mk-ink: #241b2f;
-    --mk-muted: #756b78;
-    --mk-border: #f0dfe5;
+    --mk-ink: var(--color-ink);
+    --mk-muted: var(--color-muted);
+    --mk-border: var(--color-line);
     --mk-shadow: 0 12px 30px rgba(100, 30, 58, 0.08);
     --mk-transition: 220ms ease;
 }
@@ -28,7 +28,7 @@
     gap: 0.4rem;
     margin-bottom: 1rem;
 
-    color: var(--mk-maroon);
+    color: var(--mk-accent-text);
     font-family: Arial, sans-serif;
     font-size: 0.88rem;
     font-weight: 600;
@@ -40,7 +40,7 @@
 }
 
 .mk-back-link:hover {
-    color: var(--mk-magenta);
+    color: var(--mk-accent-text);
     transform: translateX(-3px);
     text-decoration: none;
 }
@@ -170,7 +170,7 @@
 }
 
 .mk-card:hover {
-    border-color: #e8bfd0;
+    border-color: var(--color-line-hover);
     box-shadow: 0 16px 38px rgba(100, 30, 58, 0.11);
     transform: translateY(-3px);
 }
@@ -302,7 +302,7 @@
 .mk-desc-label {
     margin: 0 0 0.55rem;
 
-    color: var(--mk-maroon);
+    color: var(--mk-accent-text);
     font-size: 0.74rem;
     font-weight: 800;
     letter-spacing: 0.07em;
@@ -316,7 +316,7 @@
 .mk-desc-text {
     margin: 0;
 
-    color: #514653;
+    color: var(--color-ink-2);
     font-size: 0.92rem;
     line-height: 1.75;
     overflow-wrap: anywhere;
@@ -346,7 +346,7 @@
     min-width: 0;
     padding: 1.1rem 1.25rem;
 
-    background: linear-gradient(145deg, #ffffff, #fff9fb);
+    background: linear-gradient(145deg, var(--color-surface), var(--color-hover));
     border: 1px solid var(--mk-border);
     border-radius: 15px;
 
@@ -381,8 +381,8 @@
 }
 
 .mk-shortcut:hover {
-    border-color: #e7b6ca;
-    background: #fff4f8;
+    border-color: var(--color-line-hover);
+    background: var(--color-hover);
     box-shadow: 0 12px 24px rgba(143, 13, 66, 0.1);
     transform: translateY(-4px);
     text-decoration: none;
@@ -393,7 +393,7 @@
 }
 
 .mk-shortcut-title {
-    color: var(--mk-maroon);
+    color: var(--mk-accent-text);
     font-size: 0.98rem;
     font-weight: 800;
 
@@ -401,7 +401,7 @@
 }
 
 .mk-shortcut:hover .mk-shortcut-title {
-    color: var(--mk-magenta);
+    color: var(--mk-accent-text);
 }
 
 .mk-shortcut-count {
@@ -439,10 +439,10 @@
     min-height: 42px;
     padding: 0.65rem 0.8rem;
 
-    border: 1px solid #ead9df;
+    border: 1px solid var(--color-line);
     border-radius: 10px;
 
-    background: #fffdfc;
+    background: var(--color-field);
     color: var(--mk-ink);
     font: inherit;
 
@@ -457,7 +457,7 @@
 .mk-body textarea:focus {
     outline: none;
     border-color: var(--mk-magenta);
-    background: #ffffff;
+    background: var(--color-field);
     box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.12);
 }
 
@@ -569,7 +569,7 @@
 }
 
 .mk-btn-add:hover {
-    background: #fff0f5;
+    background: var(--color-hover);
     color: var(--mk-maroon-dark);
     box-shadow: 0 9px 20px rgba(60, 0, 25, 0.18);
     transform: translateY(-2px);
@@ -584,9 +584,9 @@
     padding: 1rem 1.2rem;
     margin-bottom: 1.5rem;
 
-    color: #236b42;
-    background: #effaf2;
-    border: 1px solid #c8e8d1;
+    color: var(--flash-fg);
+    background: var(--flash-bg);
+    border: 1px solid var(--flash-border);
     border-radius: 13px;
 
     font-family: Arial, sans-serif;
@@ -606,7 +606,7 @@
     padding: 1rem;
     margin-bottom: 1.5rem;
 
-    background: #ffffff;
+    background: var(--color-surface);
     border: 1px solid var(--mk-border);
     border-radius: 18px;
 
@@ -624,8 +624,8 @@
     padding: 0.65rem 0.8rem;
 
     color: var(--mk-ink);
-    background: #fffaf7;
-    border: 1px solid #ead9df;
+    background: var(--color-field);
+    border: 1px solid var(--color-line);
     border-radius: 11px;
 
     font: inherit;
@@ -680,9 +680,9 @@
     min-height: 43px;
     padding: 0.65rem 1rem;
 
-    color: var(--mk-maroon);
-    background: #fff0f5;
-    border: 1px solid #f3d3df;
+    color: var(--mk-accent-text);
+    background: var(--color-hover);
+    border: 1px solid var(--color-line);
     border-radius: 11px;
 
     text-decoration: none;
@@ -718,7 +718,7 @@
     overflow: hidden;
 
     color: var(--mk-ink);
-    background: #ffffff;
+    background: var(--color-surface);
 
     border: 1px solid var(--mk-border);
     border-radius: 20px;
@@ -735,7 +735,7 @@
 
 .mk-grid-card:hover {
     color: var(--mk-ink);
-    border-color: #e7b6ca;
+    border-color: var(--color-line-hover);
     box-shadow: 0 16px 32px rgba(100, 30, 58, 0.12);
     transform: translateY(-5px);
     text-decoration: none;
@@ -819,7 +819,7 @@
 .mk-grid-title {
     margin: 0 0 0.45rem;
 
-    color: var(--mk-maroon);
+    color: var(--mk-accent-text);
     font-family: Georgia, "Times New Roman", serif;
     font-size: 1.05rem;
     font-weight: 700;
@@ -829,7 +829,7 @@
 }
 
 .mk-grid-card:hover .mk-grid-title {
-    color: var(--mk-magenta);
+    color: var(--mk-accent-text);
 }
 
 .mk-grid-meta {
@@ -891,10 +891,10 @@
 
     padding: 0.55rem 0.65rem;
 
-    color: var(--mk-maroon);
-    background: #ffffff;
+    color: var(--mk-accent-text);
+    background: var(--color-surface);
 
-    border: 1px solid #e8cbd6;
+    border: 1px solid var(--color-line);
     border-radius: 9px;
 
     font-family: Arial, sans-serif;
@@ -926,10 +926,10 @@
     width: 100%;
     padding: 0.55rem 0.65rem;
 
-    color: #a3233b;
-    background: #fff1f2;
+    color: var(--chip-bad-fg);
+    background: var(--chip-bad-bg);
 
-    border: 1px solid #f4c8d0;
+    border: 1px solid var(--chip-bad-border);
     border-radius: 9px;
 
     font-family: Arial, sans-serif;
@@ -948,7 +948,7 @@
 .mk-action-delete:hover {
     color: #ffffff;
     background: #a3233b;
-    border-color: #a3233b;
+    border-color: var(--chip-bad-fg);
     transform: translateY(-2px);
 }
 
@@ -987,7 +987,7 @@
 
     padding: 6px 11px;
 
-    color: var(--mk-ink);
+    color: rgb(36, 27, 47);
     background: rgba(255, 255, 255, 0.96);
 
     border: 1px solid rgba(255, 255, 255, 0.75);
@@ -1033,9 +1033,9 @@
     padding: 1.75rem;
 
     color: var(--mk-muted);
-    background: #fffaf7;
+    background: var(--color-field);
 
-    border: 1px dashed #e8cbd6;
+    border: 1px dashed var(--color-line);
     border-radius: 17px;
 }
 

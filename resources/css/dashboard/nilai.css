@@ -94,8 +94,8 @@ main:has(.nilai) {
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-primary-dark);
-    background: #fdf1e6;
+    color: var(--color-primary-dark-text);
+    background: var(--color-tint);
     border-radius: 14px;
 }
 
@@ -103,7 +103,7 @@ main:has(.nilai) {
 .is-center { text-align: center; }
 
 .nilai-row {
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 18px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -143,7 +143,7 @@ main:has(.nilai) {
 
 .nilai-cell--kode {
     font-weight: 800;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 
 .nilai-cell--mk strong {
@@ -163,11 +163,11 @@ main:has(.nilai) {
     font-size: 0.92rem;
 }
 
-.nilai-huruf--a { background: #e3eed7; color: #3f6b1c; }
-.nilai-huruf--b { background: #e1e9f5; color: #2c4f85; }
-.nilai-huruf--c { background: #f8ecd3; color: #8a5d12; }
-.nilai-huruf--d { background: #fdecea; color: #b3261e; }
-.nilai-huruf--none { background: #f3ece6; color: var(--color-ink-soft); }
+.nilai-huruf--a { background: var(--chip-ok-bg); color: var(--chip-ok-fg); }
+.nilai-huruf--b { background: var(--chip-info-bg); color: var(--chip-info-fg); }
+.nilai-huruf--c { background: var(--chip-warn-bg); color: var(--chip-warn-fg); }
+.nilai-huruf--d { background: var(--chip-bad-bg); color: var(--chip-bad-fg); }
+.nilai-huruf--none { background: var(--chip-neutral-bg); color: var(--color-ink-soft); }
 
 .nilai-chevron {
     display: inline-flex;
@@ -194,7 +194,7 @@ main:has(.nilai) {
     font-weight: 800;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 
 .nilai-detail__empty {
@@ -209,7 +209,7 @@ main:has(.nilai) {
     flex-direction: column;
     gap: 0.45rem;
     padding: 0.85rem 1rem;
-    background: #fff8f2;
+    background: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: 16px;
 }
@@ -243,7 +243,7 @@ main:has(.nilai) {
 
 .nilai-tugas__skor {
     font-weight: 800;
-    color: var(--color-primary-dark);
+    color: var(--color-primary-dark-text);
 }
 
 /* ---------- Total ---------- */
@@ -255,7 +255,7 @@ main:has(.nilai) {
     gap: 1rem;
     margin-top: 1.1rem;
     padding: 1rem 1.2rem;
-    background: #fdf1e6;
+    background: var(--color-tint);
     border-radius: 18px;
 }
 
@@ -274,7 +274,7 @@ main:has(.nilai) {
     align-items: baseline;
     gap: 0.8rem;
     padding: 0.6rem 1.1rem;
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 14px;
 }
@@ -289,7 +289,7 @@ main:has(.nilai) {
 
 .nilai-total__ips strong {
     font-size: 1.6rem;
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 
 .nilai-note {

@@ -14,7 +14,7 @@
     line-height: 1;
     font-weight: 800;
     letter-spacing: 0.16em;
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
 }
 
 /* =========================================================
@@ -104,7 +104,7 @@
 .admin-task-panel:hover {
     transform: translateY(-5px);
 
-    border-color: #e1c8d3;
+    border-color: var(--color-line-hover);
 
     box-shadow:
         0 19px 42px rgba(42, 25, 38, 0.09);
@@ -209,7 +209,7 @@
 
 .admin-task-panel:hover .admin-task-total strong {
     transform: scale(1.08);
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
 }
 
 /* =========================================================
@@ -245,7 +245,7 @@
     font-size: 0.76rem;
     font-weight: 800;
 
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
 
     transition:
         transform 0.25s ease;
@@ -264,7 +264,7 @@
 
     border-radius: 999px;
 
-    background: #f0e8ed;
+    background: var(--color-track);
 }
 
 .admin-task-progress__bar {
@@ -337,7 +337,7 @@
 
     border-radius: 14px;
 
-    background: #fcf8fa;
+    background: var(--color-hover);
 
     transform: translateX(3px);
 }
@@ -398,14 +398,14 @@
 
 /* Published */
 .admin-task-row__icon--published {
-    color: #15803d;
-    background: #e9f8ee;
+    color: var(--chip-ok-fg);
+    background: var(--chip-ok-bg);
 }
 
 /* Draft */
 .admin-task-row__icon--draft {
-    color: #8a5a00;
-    background: #fff5d9;
+    color: var(--chip-warn-fg);
+    background: var(--chip-warn-bg);
 }
 
 /* =========================================================
@@ -427,7 +427,7 @@
 }
 
 .admin-task-row:hover h3 {
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
     transform: translateX(2px);
 }
 
@@ -464,7 +464,7 @@
 
 .admin-task-row:hover .admin-task-row__count {
     transform: scale(1.08);
-    color: var(--color-primary, #d41463);
+    color: var(--color-primary-text);
 }
 
 /* =========================================================
@@ -534,8 +534,8 @@
     position: relative;
     margin-top: 22px;
     padding: 30px 32px 28px;
-    background: #fff;
-    border: 1px solid #eadfd9;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 24px;
     overflow: hidden;
     transition: transform .25s, box-shadow .25s, border-color .25s;
@@ -544,7 +544,7 @@
 .dash .admin-task-panel:hover {
     transform: translateY(-3px);
     box-shadow: 0 18px 40px rgba(86, 45, 35, .08);
-    border-color: #e9c4d0;
+    border-color: var(--color-line-hover);
 }
 
 .dash .admin-task-panel__heading {
@@ -553,12 +553,12 @@
     justify-content: space-between;
     gap: 30px;
     padding-bottom: 22px;
-    border-bottom: 1px solid #eee4df;
+    border-bottom: 1px solid var(--color-line);
 }
 
 .dash .admin-section-eyebrow {
     margin: 0 0 7px;
-    color: #9f1239;
+    color: var(--color-crimson);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: .16em;
@@ -566,7 +566,7 @@
 
 .dash .admin-section-title {
     margin: 0;
-    color: #172033;
+    color: var(--color-ink);
     font-size: 25px;
     line-height: 1.15;
 }
@@ -574,7 +574,7 @@
 .dash .admin-section-description {
     max-width: 600px;
     margin: 8px 0 0;
-    color: #7c6f69;
+    color: var(--color-muted);
     font-size: 13px;
     line-height: 1.6;
 }
@@ -591,8 +591,8 @@
     min-height: 90px;
     padding: 14px 17px;
     text-align: right;
-    background: linear-gradient(135deg, #fff1f4 0%, #fce7f3 58%, #f3e8ff 100%);
-    border: 1px solid #efcbd9;
+    background: var(--grad-soft);
+    border: 1px solid var(--color-line);
     border-radius: 15px;
     box-shadow: 0 3px 10px rgba(159, 18, 57, .035);
     transition: transform .22s, box-shadow .22s, background .22s;
@@ -601,13 +601,13 @@
 .dash .admin-task-total:hover {
     transform: translateY(-3px) scale(1.02);
     box-shadow: 0 10px 24px rgba(159, 18, 57, .1);
-    background: linear-gradient(135deg, #ffe4ec, #fce7f3 58%, #ede9fe);
+    background: var(--grad-soft-hover);
 }
 
 .dash .admin-task-total span {
     display: block;
     margin-bottom: 7px;
-    color: #8f5265;
+    color: var(--color-muted);
     font-size: 11px;
     line-height: 1.35;
     font-weight: 700;
@@ -615,7 +615,7 @@
 
 .dash .admin-task-total strong {
     display: block;
-    color: #9f1239;
+    color: var(--color-crimson);
     font-size: 32px;
     line-height: 1;
     font-weight: 850;
@@ -633,7 +633,7 @@
 .dash .admin-task-progress:hover {
     padding-right: 10px;
     padding-left: 10px;
-    background: #fffafb;
+    background: var(--color-hover);
 }
 
 .dash .admin-task-progress__top {
@@ -641,12 +641,12 @@
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 10px;
-    color: #3f3531;
+    color: var(--color-ink);
     font-size: 13px;
 }
 
 .dash .admin-task-progress__top strong {
-    color: #9f1239;
+    color: var(--color-crimson);
     font-size: 18px;
     transition: transform .2s ease;
 }
@@ -659,7 +659,7 @@
     width: 100%;
     height: 11px;
     overflow: hidden;
-    background: #f0e9e6;
+    background: var(--color-track);
     border-radius: 99px;
 }
 
@@ -680,14 +680,14 @@
     justify-content: space-between;
     gap: 18px;
     padding: 17px 0;
-    border-top: 1px solid #eee4df;
+    border-top: 1px solid var(--color-line);
     transition: padding .2s ease, background .2s ease;
 }
 
 .dash .admin-task-row:hover {
     padding-right: 10px;
     padding-left: 10px;
-    background: #fffafb;
+    background: var(--color-hover);
 }
 
 .dash .admin-task-row__identity {
@@ -722,30 +722,30 @@
 }
 
 .dash .admin-task-row__icon--published {
-    color: #16804b;
-    background: #e9f7ef;
+    color: var(--chip-ok-fg);
+    background: var(--chip-ok-bg);
 }
 
 .dash .admin-task-row__icon--draft {
-    color: #a16207;
-    background: #fff4d8;
+    color: var(--chip-warn-fg);
+    background: var(--chip-warn-bg);
 }
 
 .dash .admin-task-row h3 {
     margin: 0 0 4px;
-    color: #29211e;
+    color: var(--color-ink);
     font-size: 13px;
 }
 
 .dash .admin-task-row p {
     margin: 0;
-    color: #756863;
+    color: var(--color-muted);
     font-size: 12px;
     line-height: 1.45;
 }
 
 .dash .admin-task-row__count {
-    color: #172033;
+    color: var(--color-ink);
     font-size: 24px;
     font-weight: 800;
 }

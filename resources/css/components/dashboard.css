@@ -121,19 +121,19 @@
    ========================================================= */
 
 .admin-metric--pink {
-    color: #d41463;
+    color: var(--metric-pink);
 }
 
 .admin-metric--purple {
-    color: #7c3aed;
+    color: var(--metric-purple);
 }
 
 .admin-metric--blue {
-    color: #2563eb;
+    color: var(--metric-blue);
 }
 
 .admin-metric--orange {
-    color: #ea580c;
+    color: var(--metric-orange);
 }
 
 
@@ -229,7 +229,7 @@
         color-mix(
             in srgb,
             currentColor 7%,
-            #ffffff
+            var(--mix-base)
         );
 
     font-size: 0.82rem;
@@ -253,7 +253,7 @@
         color-mix(
             in srgb,
             currentColor 12%,
-            #ffffff
+            var(--mix-base)
         );
 
     box-shadow:
@@ -323,7 +323,7 @@
 }
 
 .admin-metric:hover .admin-metric__caption {
-    color: #665b68;
+    color: var(--color-ink-2);
 }
 
 /* =========================================================
@@ -369,7 +369,7 @@
 
     font-weight: 800;
 
-    color: var(--color-primary);
+    color: var(--color-primary-text);
 }
 
 

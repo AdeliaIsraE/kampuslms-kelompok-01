@@ -31,6 +31,106 @@
     --color-error-bg: #FDE8F0;
     --color-error-border: #F85988;
     --color-error-text: #8F0D42;
+
+    /* ---- Token tambahan untuk mode terang/gelap ---- */
+    color-scheme: light;
+    --color-text: #241B2F;
+    --color-muted: #756B78;
+    --color-ink-2: #514653;
+    --color-field: #FFFFFF;          /* latar kotak isian */
+    --color-tint: #FDF1E6;           /* blok berlatar lembut (header tabel, total) */
+    --color-hover: #FFF6F9;          /* latar baris saat hover */
+    --color-track: #F0E8ED;          /* jalur progress bar */
+    --color-line: #EADFE5;           /* garis halus */
+    --color-line-hover: #E7B6CA;     /* garis saat hover */
+    --color-crimson: #9F1239;
+    --color-placeholder: #A69AA5;
+    --color-faint: #C9CCD1;
+    --color-primary-text: #CB125E;       /* teks/tautan beraksen */
+    --color-primary-dark-text: #8F0D42;
+    --mix-base: #FFFFFF;             /* dasar campuran color-mix */
+    --color-header-bg: #8F0D42;
+    --color-nav-text: #F3D9C4;
+    --color-footer-text: #F3D9C4;
+    --header-edge: transparent;
+
+    --chip-ok-bg: #E3EED7;   --chip-ok-fg: #3F6B1C;   --chip-ok-border: #B7DFC2;
+    --chip-warn-bg: #F8ECD3; --chip-warn-fg: #8A5D12;
+    --chip-bad-bg: #FDECEA;  --chip-bad-fg: #B3261E;  --chip-bad-border: #F5C2C0;
+    --chip-info-bg: #E1E9F5; --chip-info-fg: #2C4F85;
+    --chip-neutral-bg: #F3ECE6;
+    --flash-bg: #EFFAF2; --flash-fg: #236B42; --flash-border: #C8E8D1;
+    --flash2-bg: #E6F4EA; --flash2-fg: #1E7E34; --flash2-border: #B7DFC2;
+    --mk-accent-text: #8F0D42;
+
+    --metric-pink: #D41463; --metric-purple: #7C3AED; --metric-blue: #2563EB; --metric-orange: #EA580C;
+    --tone-blue: #2563EB;   --tone-purple: #7C3AED;
+    --grad-soft: linear-gradient(135deg, #FFF1F4 0%, #FCE7F3 58%, #F3E8FF 100%);
+    --grad-soft-hover: linear-gradient(135deg, #FFE4EC, #FCE7F3 58%, #EDE9FE);
+}
+
+/* =========================================================
+   MODE GELAP — palet: Space Indigo #2E294E, Berry Lipstick #D90368,
+   Aquamarine #7FEFBD. Berry hanya untuk isian (tombol, banner, lencana);
+   teks beraksen memakai Aquamarine karena kontras Berry di atas indigo rendah.
+   Aktif lewat <html data-theme="dark"> (diatur skrip di <head>).
+   ========================================================= */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-bg: #211D38;
+    --color-surface: #2E294E;
+    --color-ink: #FFFDE8;
+    --color-ink-soft: #B7B2D6;
+    --color-primary: #D90368;
+    --color-primary-dark: #8F0D42;
+    --color-border: #4A4575;
+    --color-accent: #7FEFBD;
+
+    --color-success-bg: #1E4B45; --color-success-border: #3E8F7B; --color-success-text: #7FEFBD;
+    --color-error-bg: #4F2340;   --color-error-border: #D90368;   --color-error-text: #FFB3CC;
+
+    --color-text: #FFFDE8;
+    --color-muted: #B7B2D6;
+    --color-ink-2: #E0DCF2;
+    --color-field: #262143;
+    --color-tint: #3A345F;
+    --color-hover: #38325C;
+    --color-track: #443F6E;
+    --color-line: #4A4575;
+    --color-line-hover: #7B74B0;
+    --color-crimson: #7FEFBD;
+    --color-placeholder: #8E88B8;
+    --color-faint: #6E6896;
+    --color-primary-text: #7FEFBD;
+    --color-primary-dark-text: #7FEFBD;
+    --mix-base: #2E294E;
+    --color-header-bg: #2E294E;
+    --color-nav-text: #D9D5F0;
+    --color-footer-text: #B7B2D6;
+    --header-edge: #D90368;
+
+    --chip-ok-bg: #1E4B45;   --chip-ok-fg: #7FEFBD;   --chip-ok-border: #2F6B5F;
+    --chip-warn-bg: #4A3F2A; --chip-warn-fg: #F2CF7A;
+    --chip-bad-bg: #4F2340;  --chip-bad-fg: #FF9DB8;  --chip-bad-border: #7A3358;
+    --chip-info-bg: #2F3A6B; --chip-info-fg: #B4C6FF;
+    --chip-neutral-bg: #3A345F;
+    --flash-bg: #1E4B45; --flash-fg: #7FEFBD; --flash-border: #2F6B5F;
+    --flash2-bg: #1E4B45; --flash2-fg: #7FEFBD; --flash2-border: #2F6B5F;
+
+    --metric-pink: #E8478B; --metric-purple: #9D6BFF; --metric-blue: #4F8DFF; --metric-orange: #F07A2A;
+    --tone-blue: #8FB4FF;   --tone-purple: #B79CFF;
+    --grad-soft: linear-gradient(135deg, #3A2A55 0%, #2E294E 58%, #2A3358 100%);
+    --grad-soft-hover: linear-gradient(135deg, #46315F, #33294F 58%, #2F3A63);
+
+    /* variabel courses.css */
+    --mk-cream: #211D38;
+    --mk-white: #2E294E;
+    --mk-ink: #FFFDE8;
+    --mk-muted: #B7B2D6;
+    --mk-border: #4A4575;
+    --mk-pink: #3A345F;
+    --mk-accent-text: #7FEFBD;
 }
 
 * { box-sizing: border-box; }
@@ -44,7 +144,8 @@ body {
 }
 
 header.app-header {
-    background: var(--color-primary-dark);
+    background: var(--color-header-bg);
+    box-shadow: 0 3px 0 var(--header-edge);
     color: #fff;
     padding: 1.1rem 2rem;
     display: flex;
@@ -59,7 +160,7 @@ header.app-header .brand {
 }
 
 header.app-header nav a {
-    color: #F3D9C4;
+    color: var(--color-nav-text);
     text-decoration: none;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.9rem;
@@ -89,7 +190,7 @@ header.app-header nav a.active {
     border: none;
     padding: 0;
     cursor: pointer;
-    color: #F3D9C4;
+    color: var(--color-nav-text);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.9rem;
 }
@@ -156,8 +257,8 @@ footer.app-footer {
    Aktif lewat <x-layout full-footer>
    --------------------------------------------------------- */
 footer.site-footer {
-    background: var(--color-primary-dark);
-    color: var(--color-border);
+    background: var(--color-header-bg);
+    color: var(--color-footer-text);
     font-family: Arial, Helvetica, sans-serif;
     margin-top: 1rem;
 }
@@ -190,7 +291,7 @@ footer.site-footer {
 
 .site-footer__tagline {
     font-size: 0.8rem;
-    color: var(--color-border);
+    color: var(--color-footer-text);
 }
 
 .site-footer__desc {
@@ -272,8 +373,50 @@ header.app-header nav a.nav-bell.active {
     line-height: 1;
     color: #fff;
     background: var(--color-card-4-from, #F85988);
-    border: 2px solid var(--color-primary-dark);
+    border: 2px solid var(--color-header-bg);
     border-radius: 999px;
+}
+
+
+/* =========================================================
+   TOMBOL GANTI TEMA (terang/gelap) — di navbar
+   ========================================================= */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-left: 1.25rem;
+    padding: 0;
+    vertical-align: middle;
+    color: var(--color-nav-text);
+    background: none;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus-visible {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* Pindah tema tanpa "berkedip" kasar, tapi tidak untuk pengguna yang mengurangi animasi */
+@media (prefers-reduced-motion: no-preference) {
+    body, header.app-header, footer.site-footer { transition: background-color 0.25s ease, color 0.25s ease; }
 }
 
 /* =========================================================
@@ -330,9 +473,14 @@ header.app-header nav a.nav-bell.active {
         height: 40px;
     }
 
+    .theme-toggle { margin-left: auto; width: 40px; height: 40px; }
+    header.app-header nav a.nav-bell ~ .theme-toggle { margin-left: 0; }
+
     .logout-form {
         margin-left: auto;
     }
+
+    .theme-toggle ~ .logout-form { margin-left: 0; }
 
     /* kalau ada lonceng, lonceng yang mendorong ke kanan; Keluar menempel di sebelahnya */
     header.app-header nav a.nav-bell ~ .logout-form {

@@ -82,9 +82,9 @@ main:has(.tim-grid) {
     margin: 0 0 0.6rem;
     padding: 0.25rem 0.8rem;
     font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--color-primary, #CB125E);
-    background: color-mix(in srgb, var(--color-primary, #CB125E) 10%, white);
-    border: 1px solid color-mix(in srgb, var(--color-primary, #CB125E) 22%, white);
+    color: var(--color-primary-text);
+    background: color-mix(in srgb, var(--color-primary, #CB125E) 10%, var(--mix-base));
+    border: 1px solid color-mix(in srgb, var(--color-primary, #CB125E) 22%, var(--mix-base));
     border-radius: 999px;
 }
 .tim-nim {

@@ -54,9 +54,9 @@
 .mk-enroll-remove {
     padding: 0.25rem 0.7rem;
     border-radius: 4px;
-    border: 1px solid #f5c2c0;
-    background: #fdecea;
-    color: #b3261e;
+    border: 1px solid var(--chip-bad-border);
+    background: var(--chip-bad-bg);
+    color: var(--chip-bad-fg);
     cursor: pointer;
     font-family: Arial, sans-serif;
     font-size: 0.8rem;

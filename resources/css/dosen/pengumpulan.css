@@ -13,6 +13,11 @@
     --submission-muted: #806d77;
     --submission-border: #f1dce5;
     --submission-surface: #ffffff;
+    --submission-field: #fffdfd;
+    --submission-soft: #fff9fb;
+    --submission-head: #fff5f9;
+    --submission-line: #f3e4ea;
+    --submission-ink2: #5a4852;
 
     width: min(1180px, calc(100% - 40px));
     margin: 34px auto 56px;
@@ -214,7 +219,7 @@
     overflow: hidden;
     border: 1px solid var(--submission-border);
     border-radius: 21px;
-    background: #ffffff;
+    background: var(--submission-surface);
     box-shadow: 0 7px 24px rgb(77 24 48 / 5%);
     isolation: isolate;
     transition:
@@ -254,7 +259,7 @@
 
 .submission-page .submission-stat:hover {
     transform: translateY(-7px);
-    border-color: color-mix(in srgb, var(--stat-color) 35%, white);
+    border-color: color-mix(in srgb, var(--stat-color) 35%, var(--mix-base));
     box-shadow: 0 18px 35px rgb(77 24 48 / 12%);
 }
 
@@ -330,7 +335,7 @@
 .submission-page .stat-tag {
     display: inline-block;
     padding: 5px 9px;
-    border: 1px solid color-mix(in srgb, var(--stat-color) 12%, white);
+    border: 1px solid color-mix(in srgb, var(--stat-color) 12%, var(--mix-base));
     border-radius: 999px;
     background: var(--stat-soft);
     color: var(--stat-color);
@@ -349,7 +354,7 @@
 
 .submission-page .stat-label {
     margin-bottom: 7px;
-    color: #65505b;
+    color: var(--submission-ink2);
     font-size: 12px;
     font-weight: 750;
     line-height: 1.5;
@@ -365,7 +370,7 @@
 }
 
 .submission-page .submission-stat small {
-    color: #806d77;
+    color: var(--submission-muted);
     font-size: 11px;
     line-height: 1.6;
 }
@@ -394,7 +399,7 @@
     margin-top: 12px;
     overflow: hidden;
     border-radius: 999px;
-    background: #e7f2eb;
+    background: var(--color-track);
 }
 
 .submission-page .stat-progress span {
@@ -421,8 +426,8 @@
     justify-content: space-between;
     gap: 18px;
     padding: 27px 30px;
-    border-bottom: 1px solid #f4e5eb;
-    background: linear-gradient(120deg, #ffffff, #fff9fb);
+    border-bottom: 1px solid var(--submission-line);
+    background: linear-gradient(120deg, var(--submission-surface), var(--submission-soft));
 }
 
 .submission-page .submission-panel-heading .submission-eyebrow {
@@ -452,9 +457,9 @@
     align-items: center;
     gap: 8px;
     padding: 10px 13px;
-    border: 1px solid #f5d6e2;
+    border: 1px solid var(--submission-line);
     border-radius: 999px;
-    background: #fff0f5;
+    background: var(--submission-light);
     color: var(--submission-dark);
     font-size: 11px;
     font-weight: 800;
@@ -491,15 +496,15 @@
     min-width: 0;
     min-height: 47px;
     padding: 0 15px;
-    border: 1px solid #eadbe2;
+    border: 1px solid var(--submission-line);
     border-radius: 13px;
-    background: #fffdfd;
+    background: var(--submission-field);
     transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
 
 .submission-page .submission-search:focus-within {
     border-color: var(--submission-primary);
-    background: #ffffff;
+    background: var(--submission-field);
     box-shadow: 0 0 0 4px rgb(194 24 91 / 9%);
 }
 
@@ -526,14 +531,14 @@
 }
 
 .submission-page .submission-search input::placeholder {
-    color: #a3939c;
+    color: var(--color-placeholder);
 }
 
 .submission-page .submission-filter-wrap {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    color: #76616c;
+    color: var(--submission-muted);
     font-size: 11px;
     font-weight: 750;
 }
@@ -543,10 +548,10 @@
     max-width: 100%;
     min-height: 47px;
     padding: 0 34px 0 13px;
-    border: 1px solid #eadbe2;
+    border: 1px solid var(--submission-line);
     border-radius: 13px;
     outline: none;
-    background: #ffffff;
+    background: var(--submission-field);
     color: var(--submission-text);
     font: inherit;
     font-size: 12px;
@@ -574,14 +579,14 @@
 }
 
 .submission-page .submission-table thead {
-    background: #fff5f9;
+    background: var(--submission-head);
 }
 
 .submission-page .submission-table th {
     padding: 16px 20px;
-    border-top: 1px solid #f5e6ec;
-    border-bottom: 1px solid #f1e1e8;
-    color: #806674;
+    border-top: 1px solid var(--submission-line);
+    border-bottom: 1px solid var(--submission-line);
+    color: var(--submission-muted);
     font-size: 10px;
     font-weight: 850;
     letter-spacing: .7px;
@@ -600,8 +605,8 @@
 
 .submission-page .submission-table td {
     padding: 18px 20px;
-    border-bottom: 1px solid #f5eaf0;
-    color: #54434c;
+    border-bottom: 1px solid var(--submission-line);
+    color: var(--submission-ink2);
     font-size: 12px;
     vertical-align: middle;
     white-space: nowrap;
@@ -612,7 +617,7 @@
 }
 
 .submission-page .submission-table tbody tr:hover {
-    background: #fff8fb;
+    background: var(--color-hover);
 }
 
 .submission-page .submission-table tbody tr:last-child td {
@@ -659,19 +664,19 @@
 
 .submission-page .student-cell strong {
     margin-bottom: 4px;
-    color: #34222d;
+    color: var(--submission-text);
     font-size: 12px;
     font-weight: 800;
 }
 
 .submission-page .student-cell small {
-    color: #97838e;
+    color: var(--submission-muted);
     font-size: 10px;
 }
 
 .submission-page .assignment-name {
     display: inline-block;
-    color: #5c3949;
+    color: var(--submission-ink2);
     font-weight: 700;
 }
 
@@ -699,21 +704,21 @@
 }
 
 .submission-page .status-submitted {
-    border-color: #d4f0df;
-    background: #eaf8ef;
-    color: #187447;
+    border-color: var(--chip-ok-border);
+    background: var(--chip-ok-bg);
+    color: var(--chip-ok-fg);
 }
 
 .submission-page .status-pending {
-    border-color: #f7e6c7;
-    background: #fff5e4;
-    color: #98600c;
+    border-color: var(--chip-warn-border);
+    background: var(--chip-warn-bg);
+    color: var(--chip-warn-fg);
 }
 
 .submission-page .status-late {
-    border-color: #f7d5df;
-    background: #ffedf2;
-    color: #b91f43;
+    border-color: var(--chip-bad-border);
+    background: var(--chip-bad-bg);
+    color: var(--chip-bad-fg);
 }
 
 /* ===================== KONDISI KOSONG ===================== */
@@ -736,7 +741,7 @@
     height: 48px;
     margin: 0 auto 12px;
     border-radius: 16px;
-    background: #fff0f5;
+    background: var(--submission-light);
     color: var(--submission-primary);
     font-size: 29px;
 }
@@ -760,9 +765,9 @@
     align-items: center;
     gap: 9px;
     padding: 16px 30px;
-    border-top: 1px solid #f5e6ec;
-    background: #fffafd;
-    color: #8c7581;
+    border-top: 1px solid var(--submission-line);
+    background: var(--submission-soft);
+    color: var(--submission-muted);
     font-size: 11px;
 }
 
@@ -952,3 +957,35 @@
         transition-duration: .01ms !important;
     }
 }
+
+/* =====================================================
+   MODE GELAP (aktif lewat <html data-theme="dark">)
+   Berry hanya untuk isian; teks beraksen memakai Aquamarine.
+   ===================================================== */
+:root[data-theme="dark"] .submission-page {
+    --submission-primary: #7FEFBD;
+    --submission-dark: #7FEFBD;
+    --submission-light: #3A345F;
+    --submission-text: #FFFDE8;
+    --submission-muted: #B7B2D6;
+    --submission-border: #4A4575;
+    --submission-surface: #2E294E;
+    --submission-field: #262143;
+    --submission-soft: #2A2548;
+    --submission-head: #3A345F;
+    --submission-line: #4A4575;
+    --submission-ink2: #E0DCF2;
+}
+
+:root[data-theme="dark"] .submission-page .submission-stat { --stat-color: #FF6FA8; --stat-soft: #4A2A52; }
+:root[data-theme="dark"] .submission-page .stat-total     { --stat-color: #FF6FA8; --stat-soft: #4A2A52; }
+:root[data-theme="dark"] .submission-page .stat-submitted { --stat-color: #3DDC97; --stat-soft: #1E4B45; }
+:root[data-theme="dark"] .submission-page .stat-pending   { --stat-color: #F2B24C; --stat-soft: #4A3F2A; }
+:root[data-theme="dark"] .submission-page .stat-late      { --stat-color: #FF7A93; --stat-soft: #4F2340; }
+:root[data-theme="dark"] .submission-page .stat-icon { color: #211D38; }
+:root[data-theme="dark"] .submission-page .student-avatar {
+    color: #FFB3CC;
+    background: linear-gradient(145deg, #4F2340, #6A2D55);
+    border-color: #7A3358;
+}
+:root[data-theme="dark"] .submission-page .footer-status-dot { background: #D90368; }

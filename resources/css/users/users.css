@@ -121,8 +121,8 @@
     gap: 0.65rem;
     margin: 0 0 1.25rem;
     padding: 1rem;
-    background: #ffffff;
-    border: 1px solid #f0dfe5;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 18px;
     box-shadow: 0 8px 22px rgba(100, 30, 58, 0.045);
 }
@@ -141,9 +141,9 @@
 .users-filter select {
     min-height: 44px;
     padding: 0.7rem 0.9rem;
-    color: #241b2f;
-    background: #fffaf7;
-    border: 1px solid #ead9df;
+    color: var(--color-ink);
+    background: var(--color-field);
+    border: 1px solid var(--color-line);
     border-radius: 12px;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.9rem;
@@ -153,7 +153,7 @@
 }
 
 .users-filter input[type="search"]::placeholder {
-    color: #94828c;
+    color: var(--color-placeholder);
 }
 
 .users-filter input[type="search"]:focus,
@@ -203,8 +203,8 @@
     max-width: none;
     min-width: 0;
     padding: 0.5rem 1.25rem 1.25rem;
-    background: #ffffff;
-    border: 1px solid #f0dfe5;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 22px;
     box-shadow: 0 10px 28px rgba(100, 30, 58, 0.055);
 }
@@ -223,14 +223,14 @@
     border-spacing: 0;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.9rem;
-    color: #241b2f;
+    color: var(--color-ink);
 }
 
 .users-table th {
     padding: 14px 12px;
-    color: #990d43;
-    background: #fff4f7;
-    border-bottom: 1px solid #f0dfe5;
+    color: var(--color-primary-dark-text);
+    background: var(--color-pinktint);
+    border-bottom: 1px solid var(--color-line);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -249,7 +249,7 @@
 
 .users-table td {
     padding: 15px 12px;
-    border-bottom: 1px solid #f4e8ec;
+    border-bottom: 1px solid var(--color-line);
     vertical-align: middle;
     line-height: 1.5;
 }
@@ -259,7 +259,7 @@
 }
 
 .users-table tbody tr:hover {
-    background: #fff8fa;
+    background: var(--color-hover);
 }
 
 .users-table tbody tr:last-child td {
@@ -269,19 +269,19 @@
 /* ---------- Nama dan email ---------- */
 
 .users-name {
-    color: #241b2f;
+    color: var(--color-ink);
     font-weight: 700;
     text-decoration: none;
     transition: color 0.2s ease;
 }
 
 .users-name:hover {
-    color: #c2185b;
+    color: var(--color-primary-text);
     text-decoration: underline;
 }
 
 .users-email {
-    color: #716575;
+    color: var(--color-muted);
     font-size: 0.8rem;
     overflow-wrap: anywhere;
 }
@@ -290,9 +290,9 @@
     display: inline-block;
     margin-left: 0.4rem;
     padding: 3px 8px;
-    color: #990d43;
-    background: #fde8f0;
-    border: 1px solid #f8d3e0;
+    color: var(--chip-pink-fg);
+    background: var(--chip-pink-bg);
+    border: 1px solid var(--chip-pink-border);
     border-radius: 999px;
     font-size: 0.7rem;
     font-weight: 700;
@@ -318,21 +318,21 @@
 }
 
 .badge--admin {
-    color: #990d43;
-    background: #fde8f0;
-    border-color: #f8d3e0;
+    color: var(--chip-pink-fg);
+    background: var(--chip-pink-bg);
+    border-color: var(--chip-pink-border);
 }
 
 .badge--dosen {
-    color: #7c3aed;
-    background: #f3e8ff;
-    border-color: #e8d5ff;
+    color: var(--chip-purple-fg);
+    background: var(--chip-purple-bg);
+    border-color: var(--chip-purple-border);
 }
 
 .badge--mahasiswa {
-    color: #2456a6;
-    background: #eaf1ff;
-    border-color: #d6e4ff;
+    color: var(--chip-blue-fg);
+    background: var(--chip-blue-bg);
+    border-color: var(--chip-blue-border);
 }
 
 /* ---------- Aksi tabel ---------- */
@@ -343,7 +343,7 @@
     margin-left: 0.8rem;
     border: none;
     background: transparent;
-    color: #990d43;
+    color: var(--color-primary-dark-text);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.85rem;
     font-weight: 600;
@@ -357,7 +357,7 @@
 }
 
 .link-action:hover {
-    color: #d4145a;
+    color: var(--color-primary-text);
     text-decoration: underline;
 }
 
@@ -368,12 +368,12 @@
 }
 
 .link-action--danger {
-    color: #be123c;
+    color: var(--chip-bad-fg);
     font-weight: 700;
 }
 
 .link-action--danger:hover {
-    color: #9f1239;
+    color: var(--color-crimson);
 }
 
 .inline-form {
@@ -384,7 +384,7 @@
 
 .users-count {
     margin: 1rem 0 0;
-    color: #716575;
+    color: var(--color-muted);
     font-family: Arial, Helvetica, sans-serif;
     font-size: 0.8rem;
     text-align: center;
@@ -392,7 +392,7 @@
 
 .users-empty {
     margin: 1.5rem 0;
-    color: #716575;
+    color: var(--color-muted);
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
 }
@@ -415,9 +415,9 @@
     display: block;
     min-width: 2rem;
     padding: 0.45rem 0.7rem;
-    color: #990d43;
-    background: #ffffff;
-    border: 1px solid #f0dfe5;
+    color: var(--color-primary-dark-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
     border-radius: 9px;
     text-align: center;
     text-decoration: none;
@@ -427,8 +427,8 @@
 }
 
 .pagination a.page-link:hover {
-    background: #fff0f5;
-    border-color: #e9b8cb;
+    background: var(--color-hover);
+    border-color: var(--color-line-hover);
 }
 
 .pagination .active .page-link {
@@ -438,8 +438,8 @@
 }
 
 .pagination .disabled .page-link {
-    color: #b8aab2;
-    background: #fffaf7;
+    color: var(--color-faint);
+    background: var(--color-field);
     opacity: 0.65;
 }
 
@@ -463,12 +463,12 @@
 
 .user-detail dt {
     flex: 0 0 11rem;
-    color: #716575;
+    color: var(--color-muted);
 }
 
 .user-detail dd {
     margin: 0;
-    color: #241b2f;
+    color: var(--color-ink);
     font-weight: 700;
     overflow-wrap: anywhere;
 }
