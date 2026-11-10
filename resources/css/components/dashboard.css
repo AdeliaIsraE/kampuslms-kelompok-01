@@ -122,18 +122,22 @@
 
 .admin-metric--pink {
     color: var(--metric-pink);
+    --metric-accent: var(--metric-pink);
 }
 
 .admin-metric--purple {
     color: var(--metric-purple);
+    --metric-accent: var(--metric-purple);
 }
 
 .admin-metric--blue {
     color: var(--metric-blue);
+    --metric-accent: var(--metric-blue);
 }
 
 .admin-metric--orange {
     color: var(--metric-orange);
+    --metric-accent: var(--metric-orange);
 }
 
 
@@ -162,14 +166,16 @@
 
     border-radius: 14px;
 
-    background: currentColor;
+    /* currentColor tidak dipakai di background karena color di bawah
+       diset putih (untuk ikon), sehingga kotaknya ikut putih. */
+    background: var(--metric-accent);
     color: #ffffff;
 
     box-shadow:
         0 7px 15px
         color-mix(
             in srgb,
-            currentColor 18%,
+            var(--metric-accent) 18%,
             transparent
         );
 
@@ -185,7 +191,7 @@
         0 11px 22px
         color-mix(
             in srgb,
-            currentColor 25%,
+            var(--metric-accent) 25%,
             transparent
         );
 }
