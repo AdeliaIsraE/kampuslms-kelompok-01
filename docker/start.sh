@@ -10,7 +10,7 @@ rm -f /etc/apache2/mods-enabled/mpm_event.* /etc/apache2/mods-enabled/mpm_worker
 cd /var/www/html
 
 # Migrasi dulu: worker butuh tabel jobs. Tanpa "|| true" agar kegagalan terlihat.
-php artisan migrate --force
+php artisan migrate --force && php artisan db:seed --force
 
 # Cache dibuat saat runtime karena variabel Railway baru tersedia di sini
 php artisan config:cache
