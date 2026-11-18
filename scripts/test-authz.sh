@@ -27,7 +27,7 @@
 
 set -uo pipefail
 
-BASE_URL="${BASE_URL:-http://127.0.0.1:8000}"
+BASE_URL="${BASE_URL:-https://kampuslms-kelompok-01-production-aa7edd62.up.railway.app/}"
 ADMIN_NIM_NIP="${ADMIN_NIM_NIP:-198001012005011001}"
 DOSEN_NIM_NIP="${DOSEN_NIM_NIP:-198505052010011002}"
 MAHASISWA_NIM_NIP="${MAHASISWA_NIM_NIP:-10241999}"
