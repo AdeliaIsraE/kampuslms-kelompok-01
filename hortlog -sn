@@ -1,0 +1,148 @@
+*   [33m300eb7f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mAdel[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #139 from AdeliaIsraE/alyaaurlia
+[31m|[m[32m\[m  
+[31m|[m * [33m17cb2ae[m docs: lengkapi READ minggu 13 - riwayat kelompok
+[31m|[m[31m/[m  
+*   [33m6d8bc5c[m Merge pull request #138 from AdeliaIsraE/10241002-Putri-patch-1
+[33m|[m[34m\[m  
+[33m|[m * [33m893998c[m docs: lengkapi READ minggu 13 - riwayat kelompok
+[33m|[m[33m/[m  
+*   [33ma36c5c1[m Merge pull request #137 from AdeliaIsraE/andika
+[35m|[m[36m\[m  
+[35m|[m * [33m82e0f7d[m docs: lengkapi READ minggu 13 tentang riwayat Git kelompok
+[35m|[m[35m/[m  
+*   [33m1383021[m Merge pull request #136 from AdeliaIsraE/Adel
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33mecc8dee[m[33m ([m[1;31morigin/Adel[m[33m)[m fix: migration seeder
+* [1;32m|[m [33m91c2c5b[m Merge pull request #135 from AdeliaIsraE/Adel
+[1;33m|[m[1;32m\[m[1;32m|[m 
+[1;33m|[m * [33m00e729f[m docs: menambahkan isi deployment.md
+[1;33m|[m[1;33m/[m  
+*   [33mced0e00[m Merge pull request #134 from AdeliaIsraE/andika
+[1;35m|[m[1;36m\[m  
+[1;35m|[m * [33mfd1827c[m feat: menambah deployment.md
+* [1;36m|[m   [33m88de8d3[m Merge pull request #133 from AdeliaIsraE/Adel
+[31m|[m[32m\[m [1;36m\[m  
+[31m|[m * [1;36m|[m [33m72b3bb5[m feat: jalankan queue worker lewat supervisor
+[31m|[m[31m/[m [1;36m/[m  
+* [1;36m|[m [33m693cad0[m Merge pull request #132 from AdeliaIsraE/andika
+[33m|[m[1;36m\[m[1;36m|[m 
+[33m|[m * [33mff81385[m feat: menambahkan skrip deployment KampusLMS
+[33m|[m[33m/[m  
+*   [33m607a18f[m Merge pull request #131 from AdeliaIsraE/Adel
+[35m|[m[36m\[m  
+[35m|[m * [33mef3f03a[m fix: memperbaiki notifikasi
+* [36m|[m [33m65f0d61[m Merge pull request #130 from AdeliaIsraE/Adel
+[1;31m|[m[36m\[m[36m|[m 
+[1;31m|[m * [33m7dea454[m fix: fungsi mengupload
+* [1;32m|[m [33m3c49d9a[m Merge pull request #129 from AdeliaIsraE/Adel
+[1;33m|[m[1;32m\[m[1;32m|[m 
+[1;33m|[m * [33md93cbd4[m fix: rename Coursecontroller.php -> CourseController.php
+* [1;34m|[m [33mebbf0c6[m Merge pull request #128 from AdeliaIsraE/Adel
+[1;35m|[m[1;34m\[m[1;34m|[m 
+[1;35m|[m * [33me784537[m fix: UserController memanggil view Users sesuai nama folder
+* [1;36m|[m [33m9ec8dc5[m Merge pull request #127 from AdeliaIsraE/Adel
+[31m|[m[1;36m\[m[1;36m|[m 
+[31m|[m * [33m1270119[m fix: memperbaiki penamaan file
+* [32m|[m [33m1486f87[m Merge pull request #126 from AdeliaIsraE/Adel
+[33m|[m[32m\[m[32m|[m 
+[33m|[m * [33macf7a22[m fix: memperbaiki penamaan file
+* [34m|[m [33mc761b8b[m Merge pull request #125 from AdeliaIsraE/Adel
+[35m|[m[34m\[m[34m|[m 
+[35m|[m * [33mdaa6b79[m fix: move fakerphp/faker to require for production seeding
+* [36m|[m [33m24a5a71[m Merge pull request #124 from AdeliaIsraE/Adel
+[1;31m|[m[36m\[m[36m|[m 
+[1;31m|[m * [33m2810009[m fix: dockerfile syntax
+* [1;32m|[m [33m4b9cb8c[m Merge pull request #123 from alyaurlia/Adel
+[1;33m|[m[1;32m\[m[1;32m|[m 
+[1;33m|[m * [33mdc16706[m fix(docker): production-ready Dockerfile for PHP 8.4 with auto-seed and dynamic port
+* [1;34m|[m [33m2c81f8b[m Merge pull request #122 from alyaurlia/Adel
+[1;35m|[m[1;34m\[m[1;34m|[m 
+[1;35m|[m * [33m46271e0[m fix(docker): production-ready Dockerfile for PHP 8.4 with auto-seed and dynamic port
+* [1;36m|[m [33ma538414[m Merge pull request #121 from alyaurlia/Adel
+[31m|[m[1;36m\[m[1;36m|[m 
+[31m|[m * [33md7f0637[m fix: memperbaiki tampilan form edit
+* [32m|[m [33mec49108[m Merge pull request #120 from alyaurlia/Adel
+[33m|[m[32m\[m[32m|[m 
+[33m|[m * [33m5e0125e[m fix: memperbaiki tampilan dark mode
+[33m|[m[33m/[m  
+*   [33m8e66dfc[m Merge pull request #119 from alyaurlia/renata
+[35m|[m[36m\[m  
+[35m|[m * [33mf8c7b96[m feat: menambahkan fitur light & dark mode
+[35m|[m[35m/[m  
+*   [33m45dabf9[m Merge pull request #118 from alyaurlia/Adel
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33md44df7d[m feat: tambah fitur tandai notifikasi terbaca dan baca seluruh notifikasi
+* [1;32m|[m [33m59ab96b[m Merge pull request #117 from alyaurlia/Adel
+[1;33m|[m[1;32m\[m[1;32m|[m 
+[1;33m|[m * [33m0e41512[m perf: mengoptimalkan query notifikasi
+[1;33m|[m[1;33m/[m  
+*   [33m2109186[m Merge pull request #116 from alyaurlia/10241002-Putri-patch-1
+[1;35m|[m[1;36m\[m  
+[1;35m|[m * [33m40b5ea6[m style: memperbarui tampilan form tambah tugas dan materi pada role dosen
+* [1;36m|[m [33m73c797a[m Merge pull request #115 from alyaurlia/10241002-Putri-patch-1
+[31m|[m[1;36m\[m[1;36m|[m 
+[31m|[m * [33mcb22b84[m style: memperbarui tampilan form tambah pengguna dan mata kuliah pada role admin
+[31m|[m[31m/[m  
+*   [33m2ec1e6f[m Merge pull request #114 from alyaurlia/renata
+[33m|[m[34m\[m  
+[33m|[m * [33m6b187fa[m feat: menambahkan tampilan mobile role dosen dan mahasiswa
+* [34m|[m   [33m4240826[m Merge pull request #113 from alyaurlia/10241002-Putri-patch-1
+[34m|[m[36m\[m [34m\[m  
+[34m|[m [36m|[m[34m/[m  
+[34m|[m[34m/[m[36m|[m   
+[34m|[m * [33mab9784d[m feat: menambahkan tampilan mobile role admin
+[34m|[m[34m/[m  
+*   [33me1c36d7[m Merge pull request #112 from alyaurlia/Adel
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33m10f47fb[m docs: mengisi performa.md setelah optimasi
+[1;31m|[m[1;31m/[m  
+*   [33m21dc9c9[m Merge pull request #111 from alyaurlia/alyaaurlia
+[1;33m|[m[1;34m\[m  
+[1;33m|[m * [33m1a255d8[m perf: optimalkan cache dashboard, query rekap nilai, dan penggunaan config
+[1;33m|[m[1;33m/[m  
+*   [33m4334233[m Merge pull request #110 from alyaurlia/renata
+[1;35m|[m[1;36m\[m  
+[1;35m|[m * [33m5eea1cb[m build: rapikan konfigurasi tailwind dan vite untuk produksi
+[1;35m|[m[1;35m/[m  
+*   [33m6e64909[m Merge pull request #109 from alyaurlia/andika
+[31m|[m[32m\[m  
+[31m|[m * [33ma7d45ad[m perf(pagination): batasi data yang dimuat
+* [32m|[m [33me71c738[m Merge pull request #108 from alyaurlia/andika
+[33m|[m[32m\[m[32m|[m 
+[33m|[m *   [33m359e450[m perf(db): tambah index untuk query tugas, materi, mata kuliah, dan pengguna
+[33m|[m [35m|[m[33m\[m  
+[33m|[m [35m|[m[33m/[m  
+[33m|[m[33m/[m[35m|[m   
+* [35m|[m   [33m0b90b1f[m Merge pull request #107 from alyaurlia/Adel
+[1;31m|[m[1;32m\[m [35m\[m  
+[1;31m|[m * [35m|[m [33m5d05636[m docs: membuat performa.md dan aktifkan preventLazyLoading
+[1;31m|[m[1;31m/[m [35m/[m  
+[1;31m|[m * [33m2f70ced[m perf(courses): hilangkan query count di halaman detail mata kuliah
+[1;31m|[m[1;31m/[m  
+*   [33mff51704[m Merge pull request #106 from alyaurlia/Adel
+[1;33m|[m[1;34m\[m  
+[1;33m|[m * [33mbdbd8a3[m fix: memperbaiki fitur login agar bisa menggunakan email dan nim/nip
+[1;33m|[m[1;33m/[m  
+*   [33m69f7dfc[m Merge pull request #105 from alyaurlia/10241002-Putri-patch-1
+[1;35m|[m[1;36m\[m  
+[1;35m|[m * [33me32824a[m style: memperbaiki tampilan ui dashboard kelola user dan mata kuliah
+* [1;36m|[m   [33mdec4195[m Merge pull request #104 from alyaurlia/renata
+[1;36m|[m[32m\[m [1;36m\[m  
+[1;36m|[m [32m|[m[1;36m/[m  
+[1;36m|[m[1;36m/[m[32m|[m   
+[1;36m|[m * [33m205cded[m feat: menambahkan halaman rekap mahasiswa
+* [32m|[m   [33m9b3b399[m Merge pull request #103 from alyaurlia/andika
+[32m|[m[34m\[m [32m\[m  
+[32m|[m [34m|[m[32m/[m  
+[32m|[m[32m/[m[34m|[m   
+[32m|[m * [33mb6536de[m docs: tambah panduan menjalankan queue worker di README
+[32m|[m[32m/[m  
+*   [33mf35abb4[m Merge pull request #102 from alyaurlia/Adel
+[35m|[m[36m\[m  
+[35m|[m * [33mfc83baa[m feat: tambah lonceng notifikasi navbar dan halaman daftar notifikasi
+[35m|[m[35m/[m  
+*   [33med6bc1d[m Merge pull request #101 from alyaurlia/renata
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33m8953884[m feat & style: menambahkan halaman notifikasi dosen
+[1;31m|[m[1;31m/[m  
+*   [33maaa74a1[m Merge pull request #100 fro
