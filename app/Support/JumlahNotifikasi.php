@@ -15,8 +15,10 @@ use Illuminate\Support\Facades\DB;
  * angka awal yang dirender server di komponen notification-bell, dan jawaban
  * endpoint polling (NotifikasiController@belumDibaca), jadi keduanya selalu sama.
  *
- * - admin     : aktivitas (materi diunggah + tugas terbit + pengumpulan masuk) yang belum
- *               ditandai dibaca, satu per satu atau sekaligus (users.notifications_read_at)
+ * - admin     : aktivitas administratif (materi diunggah + tugas terbit) yang belum
+ *               ditandai dibaca, satu per satu atau sekaligus (users.notifications_read_at).
+ *               Pengumpulan tugas mahasiswa TIDAK termasuk: itu aktivitas operasional per
+ *               kelas yang ditangani dosen pengampu (lihat role dosen di bawah).
  * - dosen     : pengumpulan di mata kuliah yang diampu yang belum dinilai dan belum
  *               ditandai dibaca (users.notifications_read_at + notifikasi_admin_dibaca)
  * - mahasiswa : notifikasi database yang belum dibaca (tabel notifications)
@@ -78,7 +80,13 @@ class JumlahNotifikasi
         });
     }
 
-    /** Semua aktivitas yang masih tampil di Pusat Notifikasi admin (belum ditandai dibaca), dalam SATU query. */
+    /**
+     * Semua aktivitas yang masih tampil di Pusat Notifikasi admin (belum ditandai dibaca), dalam SATU query.
+     *
+     * Hanya materi dan tugas terbit. Tabel submissions sengaja tidak disentuh: angka ini
+     * dihitung setiap 30 detik per admin (polling lonceng), dan pengumpulan mahasiswa se-kampus
+     * jumlahnya besar serta membuat angka lonceng selalu penuh.
+     */
     public static function adminBelumDibaca(User $admin): int
     {
         $batas = self::batasDibacaAdmin($admin);
@@ -91,18 +99,14 @@ class JumlahNotifikasi
             ->selectSub(
                 self::tanpaDitandai(Assignment::where('status', 'published')->when($batas, fn ($q) => $q->where('created_at', '>', $batas)), $admin->id, 'tugas', 'assignments.id')->selectRaw('count(*)'),
                 'aktivitas_tugas'
-            )
-            ->selectSub(
-                self::tanpaDitandai(Submission::query()->when($batas, fn ($q) => $q->where('submitted_at', '>', $batas)), $admin->id, 'pengumpulan', 'submissions.id')->selectRaw('count(*)'),
-                'aktivitas_pengumpulan'
             );
 
         return self::jumlahkan($query->first());
     }
 
     /**
-     * Jumlah aktivitas hari ini dalam SATU query (3 subquery scalar),
-     * bukan 3 query terpisah.
+     * Jumlah aktivitas hari ini (materi + tugas terbit) dalam SATU query
+     * (2 subquery scalar), bukan 2 query terpisah.
      */
     public static function aktivitasHariIni(): int
     {
@@ -116,7 +120,7 @@ class JumlahNotifikasi
     }
 
     /**
-     * Tiga hitungan aktivitas hari ini, dalam bentuk subquery yang bisa
+     * Dua hitungan aktivitas hari ini, dalam bentuk subquery yang bisa
      * ditempelkan ke query lain lewat selectSub(). Dipakai juga oleh
      * AdminDashboardController supaya definisi "aktivitas hari ini" hanya
      * ada di satu tempat.
@@ -131,16 +135,14 @@ class JumlahNotifikasi
             'aktivitas_materi'      => Material::where('created_at', '>=', $hariIni)->selectRaw('count(*)'),
             'aktivitas_tugas'       => Assignment::where('status', 'published')
                                         ->where('created_at', '>=', $hariIni)->selectRaw('count(*)'),
-            'aktivitas_pengumpulan' => Submission::where('submitted_at', '>=', $hariIni)->selectRaw('count(*)'),
         ];
     }
 
-    /** Menjumlahkan tiga kolom aktivitas_* dari satu baris hasil query. */
+    /** Menjumlahkan dua kolom aktivitas_* dari satu baris hasil query. */
     public static function jumlahkan(object $baris): int
     {
         return (int) $baris->aktivitas_materi
-            + (int) $baris->aktivitas_tugas
-            + (int) $baris->aktivitas_pengumpulan;
+            + (int) $baris->aktivitas_tugas;
     }
 
     /**
