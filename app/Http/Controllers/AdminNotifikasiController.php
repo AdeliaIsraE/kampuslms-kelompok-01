@@ -49,7 +49,6 @@ class AdminNotifikasiController extends Controller
 
         return view('admin.notifikasi', [
             'ringkasan' => $this->notifikasi->ringkasan(),
-            'mkAktif' => $this->notifikasi->mataKuliahAktif(),
             'tenggat' => $this->notifikasi->tenggatTerdekat(),
             'tab' => $tab,
             'tabs' => $feed['tabs'],
