@@ -125,10 +125,19 @@ class CourseController extends Controller
             // (admin dan dosen pengampu).
             if (Route::has($routePrefix . '.mahasiswa.store')) {
                 $data['available'] = User::query()
-                    ->where('role', 'mahasiswa')
-                    ->whereNotIn('id', $enrolled->modelKeys())
-                    ->orderBy('name')
-                    ->get(['id', 'name', 'nim_nip']);
+                ->where('role', 'mahasiswa')
+                ->whereNotIn('id', $enrolled->modelKeys())
+                ->when($request->filled('q'), function ($query) use ($request) {
+                    $search = $request->q;
+
+                    $query->where(function ($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('nim_nip', 'like', '%' . $search . '%');
+                    });
+                })
+                ->orderBy('name')
+                ->paginate(20)
+                ->withQueryString();
             }
         }
 

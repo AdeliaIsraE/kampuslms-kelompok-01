@@ -1,3 +1,4 @@
+
 {{--
     View show: detail satu mata kuliah (banner, kode, SKS, dosen, status, deskripsi).
 
@@ -18,7 +19,7 @@
             && $user->can('update', $mataKuliah);
 
         // $enrolled dikirim controller hanya bila boleh melihat daftar peserta;
-        // $available hanya ada bila route tambah mahasiswa tersedia (admin).
+        // $available hanya ada bila route tambah mahasiswa tersedia.
         $canEnroll = isset($available)
             && Route::has($routePrefix . '.mahasiswa.store');
     @endphp
@@ -78,7 +79,7 @@
                 <p class="mk-desc-text">Belum ada deskripsi untuk mata kuliah ini.</p>
             @endif
 
-            {{-- Pintasan ke materi & tugas (hanya bila route-nya ada untuk peran ini) --}}
+            {{-- Pintasan ke materi & tugas --}}
             @if (Route::has($routePrefix . '.materi.index') || Route::has($routePrefix . '.tugas.index'))
                 <div class="mk-shortcuts">
                     @if (Route::has($routePrefix . '.materi.index'))
@@ -151,40 +152,125 @@
                         </div>
                     @endif
 
-                    {{-- Form tambah mahasiswa (hanya admin) --}}
+                    {{-- Form tambah mahasiswa --}}
                     @if ($canEnroll)
                         <h3 class="mk-enroll-subtitle">Tambah Mahasiswa</h3>
 
-                        @if ($available->isEmpty())
-                            <p class="mk-desc-text">Semua mahasiswa sudah terdaftar pada mata kuliah ini.</p>
-                        @else
-                            <form action="{{ route($routePrefix . '.mahasiswa.store', $mataKuliah) }}"
-                                  method="POST" class="mk-enroll-form">
-                                @csrf
+                        {{-- Form pencarian mahasiswa --}}
+                        <form
+                            action="{{ route($routePrefix . '.show', $mataKuliah) }}"
+                            method="GET"
+                            id="mk-student-search-form"
+                        >
+                            <input
+                                type="search"
+                                name="q"
+                                id="mk-student-filter"
+                                class="form-control"
+                                placeholder="Cari nama atau NIM..."
+                                value="{{ request('q') }}"
+                                autocomplete="off"
+                            >
 
-                                <input
-                                    type="search"
-                                    id="mk-student-filter"
-                                    class="form-control"
-                                    placeholder="Cari nama atau NIM..."
-                                    autocomplete="off"
-                                >
+                            <button type="submit" class="btn btn-primary">
+                                Cari
+                            </button>
+                        </form>
+
+                        {{-- Pencarian otomatis saat pengguna mengetik --}}
+                        <script>
+                            (function () {
+                                const searchInput = document.getElementById('mk-student-filter');
+                                const searchForm = document.getElementById('mk-student-search-form');
+
+                                if (!searchInput || !searchForm) return;
+
+                                let searchTimeout;
+
+                                searchInput.addEventListener('input', function () {
+                                    clearTimeout(searchTimeout);
+
+                                    searchTimeout = setTimeout(function () {
+                                        searchForm.requestSubmit();
+                                    }, 400);
+                                });
+                            })();
+                        </script>
+
+                        @if ($available->isEmpty())
+                            @if (request()->filled('q'))
+                                <p class="mk-desc-text">Mahasiswa yang dicari tidak ditemukan.</p>
+                            @else
+                                <p class="mk-desc-text">Semua mahasiswa sudah terdaftar pada mata kuliah ini.</p>
+                            @endif
+                        @else
+                            {{-- Form pendaftaran mahasiswa --}}
+                            <form
+                                action="{{ route($routePrefix . '.mahasiswa.store', $mataKuliah) }}"
+                                method="POST"
+                                class="mk-enroll-form"
+                                id="mk-enroll-form"
+                            >
+                                @csrf
 
                                 <div class="mk-student-picker" id="mk-student-picker">
                                     @foreach ($available as $s)
-                                        <label class="mk-student-option"
-                                               data-search="{{ \Illuminate\Support\Str::lower($s->name . ' ' . $s->nim_nip) }}">
+                                        <label class="mk-student-option">
                                             <input
                                                 type="checkbox"
-                                                name="student_ids[]"
                                                 value="{{ $s->id }}"
-                                                @checked(in_array($s->id, array_map('intval', (array) old('student_ids', []))))
+                                                @checked(in_array(
+                                                    $s->id,
+                                                    array_map('intval', (array) old('student_ids', []))
+                                                ))
                                             >
                                             <span>{{ $s->name }}</span>
                                             <small>{{ $s->nim_nip }}</small>
                                         </label>
                                     @endforeach
                                 </div>
+
+                                {{-- Navigasi pagination mahasiswa --}}
+                                @if ($available->hasPages())
+                                    <nav class="mk-pagination" aria-label="Navigasi halaman mahasiswa">
+
+                                        {{-- Tombol sebelumnya --}}
+                                        @if ($available->onFirstPage())
+                                            <span class="mk-page-disabled">Sebelumnya</span>
+                                        @else
+                                            <a href="{{ $available->previousPageUrl() }}" class="mk-page-link">
+                                                Sebelumnya
+                                            </a>
+                                        @endif
+
+                                        {{-- Nomor halaman --}}
+                                        @foreach ($available->getUrlRange(
+                                            max(1, $available->currentPage() - 2),
+                                            min($available->lastPage(), $available->currentPage() + 2)
+                                        ) as $page => $url)
+                                            @if ($page == $available->currentPage())
+                                                <span class="mk-page-active">{{ $page }}</span>
+                                            @else
+                                                <a href="{{ $url }}" class="mk-page-link">{{ $page }}</a>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Tombol selanjutnya --}}
+                                        @if ($available->hasMorePages())
+                                            <a href="{{ $available->nextPageUrl() }}" class="mk-page-link">
+                                                Selanjutnya
+                                            </a>
+                                        @else
+                                            <span class="mk-page-disabled">Selanjutnya</span>
+                                        @endif
+
+                                    </nav>
+                                @endif
+
+                                <p class="mk-pagination-info">
+                                    Menampilkan {{ $available->firstItem() }}–{{ $available->lastItem() }}
+                                    dari {{ $available->total() }} mahasiswa
+                                </p>
 
                                 <div class="form-actions">
                                     <button type="submit" class="btn btn-primary">
@@ -193,17 +279,69 @@
                                 </div>
                             </form>
 
+                            {{-- JavaScript penyimpanan pilihan --}}
                             <script>
                                 (function () {
-                                    const input  = document.getElementById('mk-student-filter');
                                     const picker = document.getElementById('mk-student-picker');
-                                    if (!input || !picker) return;
+                                    const enrollForm = document.getElementById('mk-enroll-form');
+                                    const searchForm = document.getElementById('mk-student-search-form');
 
-                                    input.addEventListener('input', function () {
-                                        const q = input.value.trim().toLowerCase();
-                                        picker.querySelectorAll('.mk-student-option').forEach(function (el) {
-                                            el.hidden = q !== '' && !el.dataset.search.includes(q);
+                                    if (!picker || !enrollForm || !searchForm) return;
+
+                                    const storageKey = 'selected-students-{{ $mataKuliah->id }}';
+
+                                    let selectedIds = new Set(
+                                        JSON.parse(sessionStorage.getItem(storageKey) || '[]').map(String)
+                                    );
+
+                                    // Gabungkan dengan pilihan lama jika validasi gagal
+                                    const oldSelectedIds = @json(
+                                        array_map('strval', (array) old('student_ids', []))
+                                    );
+
+                                    oldSelectedIds.forEach(id => selectedIds.add(id));
+
+                                    function saveSelectedIds() {
+                                        sessionStorage.setItem(
+                                            storageKey,
+                                            JSON.stringify([...selectedIds])
+                                        );
+                                    }
+
+                                    // Pulihkan pilihan checkbox ketika halaman dibuka
+                                    picker.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                                        checkbox.checked = selectedIds.has(checkbox.value);
+
+                                        checkbox.addEventListener('change', function () {
+                                            if (this.checked) {
+                                                selectedIds.add(this.value);
+                                            } else {
+                                                selectedIds.delete(this.value);
+                                            }
+
+                                            saveSelectedIds();
                                         });
+                                    });
+
+                                    // Simpan pilihan sebelum pencarian
+                                    searchForm.addEventListener('submit', saveSelectedIds);
+
+                                    // Kirim seluruh pilihan dari semua halaman
+                                    enrollForm.addEventListener('submit', function () {
+                                        picker.querySelectorAll('input[type="checkbox"]:checked')
+                                            .forEach(checkbox => selectedIds.add(checkbox.value));
+
+                                        selectedIds.forEach(id => {
+                                            const hiddenInput = document.createElement('input');
+
+                                            hiddenInput.type = 'hidden';
+                                            hiddenInput.name = 'student_ids[]';
+                                            hiddenInput.value = id;
+
+                                            enrollForm.appendChild(hiddenInput);
+                                        });
+
+                                        sessionStorage.removeItem(storageKey);
                                     });
                                 })();
                             </script>
