@@ -45,11 +45,14 @@ class JumlahNotifikasi
     /**
      * Waktu yang disimpan saat admin menekan "Tandai semua dibaca": SEKARANG.
      *
-     * Sengaja tidak memakai waktu aktivitas terbaru. Data contoh (seeder)
-     * punya tanggal di masa depan; bila batas ikut digeser ke sana, semua
-     * aktivitas baru (waktunya < batas) tidak akan tampil sampai tanggal itu
-     * lewat. Dengan now(), hanya aktivitas yang sudah ada saat ini yang
-     * disembunyikan, dan yang masuk sesudahnya tetap muncul sebagai baru.
+     * Sengaja tidak memakai waktu aktivitas terbaru di database: bila batas
+     * digeser ke timestamp yang lebih baru dari sekarang, aktivitas yang masuk
+     * sesudahnya (waktunya < batas) tidak akan tampil sampai waktu itu lewat.
+     * Dengan now(), hanya aktivitas yang sudah ada saat ini yang disembunyikan,
+     * dan yang masuk sesudahnya tetap muncul sebagai baru.
+     *
+     * Syarat: tidak ada aktivitas bertanggal di masa depan. DatabaseSeeder
+     * membatasi submitted_at maksimal sekarang agar syarat ini terpenuhi.
      */
     public static function batasTandaiSemuaAdmin(): Carbon
     {
@@ -165,7 +168,7 @@ class JumlahNotifikasi
     /**
      * Waktu yang disimpan saat dosen menekan "Tandai semua dibaca": SEKARANG.
      * Alasannya sama dengan batasTandaiSemuaAdmin(): jangan menggeser batas
-     * ke tanggal masa depan milik data contoh, agar pengumpulan baru tetap
+     * ke waktu yang lebih baru dari sekarang, agar pengumpulan baru tetap
      * tampil. Parameter $dosen dipertahankan agar pemanggil tidak berubah.
      */
     public static function batasTandaiSemuaDosen(User $dosen): Carbon
