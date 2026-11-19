@@ -117,10 +117,11 @@ Route::middleware('auth')->group(function () {
             Route::post('/notifikasi/dibaca-semua', [AdminNotifikasiController::class, 'dibacaSemua'])
                 ->name('notifikasi.dibaca-semua');
 
-            // Tandai satu aktivitas sebagai sudah dibaca (aktivitas lalu hilang dari daftar).
+            // Tandai satu aktivitas (materi atau tugas) sebagai sudah dibaca; lalu hilang dari daftar.
+            // Pengumpulan tugas tidak ada di notifikasi admin (ditangani dosen pengampu).
             // Nama lengkap: admin.notifikasi.dibaca
             Route::post('/notifikasi/{jenis}/{id}/dibaca', [AdminNotifikasiController::class, 'dibaca'])
-                ->whereIn('jenis', ['materi', 'tugas', 'pengumpulan'])
+                ->whereIn('jenis', ['materi', 'tugas'])
                 ->whereNumber('id')
                 ->name('notifikasi.dibaca');
 

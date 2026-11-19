@@ -1,6 +1,7 @@
 {{--
     Pusat Notifikasi admin.
-    Data dari AdminNotifikasiController (feed gabungan materi, tugas, pengumpulan).
+    Data dari AdminNotifikasiController (feed gabungan materi dan tugas; pengumpulan tugas
+    tidak termasuk, itu ditangani dosen pengampu di Pusat Notifikasi dosen).
     Gaya: resources/css/dashboard/notifikasi.css; kartu metrik memakai .admin-metric
     (components/dashboard.css) dan banner memakai .dash-hero (dashboard/dosen-mahasiswa.css).
 --}}
@@ -33,7 +34,7 @@
                 </div>
             </div>
             <p class="dash-hero__sub">
-                Pantau materi yang diunggah dosen, tugas yang diterbitkan, dan pengumpulan tugas mahasiswa.
+                Pantau materi yang diunggah dosen dan tugas yang diterbitkan. Pengumpulan tugas mahasiswa dipantau langsung oleh dosen pengampu.
             </p>
             <span class="dash-hero__status">
                 <i></i>{{ $ringkasan['aktivitasHariIni'] }} aktivitas hari ini, {{ $belumDibaca }} belum dibaca
@@ -41,7 +42,7 @@
         </header>
 
         {{-- KARTU RINGKASAN (7 hari terakhir) --}}
-        <section class="admin-metrics" aria-label="Ringkasan aktivitas 7 hari terakhir">
+        <section class="admin-metrics admin-metrics--flow" aria-label="Ringkasan aktivitas 7 hari terakhir">
             <article class="admin-metric admin-metric--blue">
                 <div class="admin-metric__top">
                     <div class="admin-metric__icon">
@@ -79,45 +80,6 @@
                 <div class="admin-metric__caption">
                     7 hari terakhir, {{ $ringkasan['tugasHariIni'] }} terbit hari ini.
                     Masih ada {{ $ringkasan['tugasDraf'] }} tugas berstatus draf.
-                </div>
-            </article>
-
-            <article class="admin-metric admin-metric--pink">
-                <div class="admin-metric__top">
-                    <div class="admin-metric__icon">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M16 11l2 2 4-4"></path>
-                        </svg>
-                    </div>
-                    <span class="admin-metric__index">03</span>
-                </div>
-                <div class="admin-metric__number">{{ $ringkasan['kumpul'] }}</div>
-                <div class="admin-metric__label">Pengumpulan Masuk</div>
-                <div class="admin-metric__caption">
-                    @if ($ringkasan['tepatWaktu'] !== null)
-                        {{ $ringkasan['tepatWaktu'] }}% tepat waktu, {{ $ringkasan['kumpulTelat'] }} terlambat (7 hari terakhir).
-                    @else
-                        Belum ada pengumpulan dalam 7 hari terakhir.
-                    @endif
-                </div>
-            </article>
-
-            <article class="admin-metric admin-metric--orange">
-                <div class="admin-metric__top">
-                    <div class="admin-metric__icon">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <circle cx="12" cy="12" r="9"></circle>
-                            <path d="M12 7v5l3 2"></path>
-                        </svg>
-                    </div>
-                    <span class="admin-metric__index">04</span>
-                </div>
-                <div class="admin-metric__number">{{ $ringkasan['menungguNilai'] }}</div>
-                <div class="admin-metric__label">Menunggu Penilaian</div>
-                <div class="admin-metric__caption">
-                    Pengumpulan yang belum diberi nilai oleh dosen pengampu.
                 </div>
             </article>
         </section>
@@ -191,23 +153,12 @@
                                                 <path d="M8 7h8"></path>
                                                 <path d="M8 11h6"></path>
                                             </svg>
-                                        @elseif ($item['jenis'] === 'tugas')
+                                        @else
                                             <svg viewBox="0 0 24 24">
                                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                                 <path d="M14 2v6h6"></path>
                                                 <path d="M8 13h8"></path>
                                                 <path d="M8 17h5"></path>
-                                            </svg>
-                                        @elseif ($item['nada'] === 'terlambat')
-                                            <svg viewBox="0 0 24 24">
-                                                <circle cx="12" cy="12" r="9"></circle>
-                                                <path d="M12 7v5l3 2"></path>
-                                            </svg>
-                                        @else
-                                            <svg viewBox="0 0 24 24">
-                                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                                                <circle cx="9" cy="7" r="4"></circle>
-                                                <path d="M16 11l2 2 4-4"></path>
                                             </svg>
                                         @endif
                                     </div>
@@ -261,11 +212,8 @@
                                         <div class="notif-item__actions">
                                             @if ($item['jenis'] === 'materi')
                                                 <a class="notif-btn notif-btn--primary" href="{{ route('admin.materi.show', $item['id']) }}">Buka Materi</a>
-                                            @elseif ($item['jenis'] === 'tugas')
-                                                <a class="notif-btn notif-btn--primary" href="{{ route('admin.tugas.show', $item['id']) }}">Lihat Tugas</a>
                                             @else
-                                                <a class="notif-btn notif-btn--primary" href="{{ route('pengumpulan.unduh', $item['id']) }}">Unduh Berkas</a>
-                                                <a class="notif-btn" href="{{ route('admin.tugas.show', $item['assignment_id']) }}">Lihat Tugas</a>
+                                                <a class="notif-btn notif-btn--primary" href="{{ route('admin.tugas.show', $item['id']) }}">Lihat Tugas</a>
                                             @endif
                                             <a class="notif-btn" href="{{ route('admin.mata-kuliah.show', $item['course_id']) }}">Lihat Mata Kuliah</a>
                                             <form method="POST" action="{{ route('admin.notifikasi.dibaca', [$item['jenis'], $item['id']]) }}" class="notif-inline-form">
@@ -328,32 +276,6 @@
 
             {{-- KOLOM SAMPING --}}
             <aside class="notif-side">
-
-                <section class="notif-card">
-                    <p class="notif-card__eyebrow">MATA KULIAH</p>
-                    <h2 class="notif-card__title">Pengumpulan Tertinggi</h2>
-                    <p class="notif-card__desc">
-                        Persentase pengumpulan dari seluruh tugas terbit dan mahasiswa terdaftar.
-                    </p>
-
-                    @forelse ($mkAktif as $mk)
-                        <div class="notif-course notif-course--{{ $mk['level'] }}">
-                            <div class="notif-course__top">
-                                <a href="{{ route('admin.mata-kuliah.show', $mk['id']) }}">{{ $mk['nama'] }}</a>
-                                <strong>{{ $mk['persen'] }}%</strong>
-                            </div>
-                            <div class="notif-bar" role="img" aria-label="{{ $mk['persen'] }} persen">
-                                <div class="notif-bar__fill" style="width: {{ $mk['persen'] }}%;"></div>
-                            </div>
-                            <p class="notif-course__sub">
-                                {{ $mk['kode'] }} &middot; {{ $mk['masuk'] }} pengumpulan &middot;
-                                {{ $mk['tugas'] }} tugas &times; {{ $mk['mahasiswa'] }} mahasiswa
-                            </p>
-                        </div>
-                    @empty
-                        <p class="notif-card__empty">Belum ada mata kuliah dengan tugas terbit.</p>
-                    @endforelse
-                </section>
 
                 <section class="notif-card">
                     <p class="notif-card__eyebrow">TENGGAT</p>
