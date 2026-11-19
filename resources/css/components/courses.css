@@ -1166,4 +1166,58 @@
     .mk-grid-card:hover {
         transform: none;
     }
+
+    /* Pagination daftar mahasiswa */
+    .mk-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 16px;
+    }
+
+    .mk-page-link,
+    .mk-page-active,
+    .mk-page-disabled {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        min-height: 36px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    .mk-page-link {
+        color: #6b21a8;
+        border: 1px solid #e5d5f3;
+        background: #fff;
+    }
+
+    .mk-page-link:hover {
+        background: #f5eaff;
+    }
+
+    .mk-page-active {
+        color: #fff;
+        background: #6b21a8;
+        border: 1px solid #6b21a8;
+    }
+
+    .mk-page-disabled {
+        color: #999;
+        border: 1px solid #eee;
+        background: #f5f5f5;
+        cursor: not-allowed;
+    }
+
+    .mk-pagination-info {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #777;
+        text-align: center;
+    }
 }
