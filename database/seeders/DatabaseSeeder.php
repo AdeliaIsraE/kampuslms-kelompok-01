@@ -113,6 +113,14 @@ class DatabaseSeeder extends Seeder
                         ? Carbon::parse($assignment->due_at)->addHours(rand(1, 72))
                         : Carbon::parse($assignment->due_at)->subHours(rand(1, 72));
 
+                    // Pengumpulan tidak boleh bertanggal di masa depan. Tanpa batas ini,
+                    // submission pada tugas yang tenggatnya masih jauh (atau yang terlambat
+                    // melewati "sekarang") akan selalu lebih baru dari notifications_read_at
+                    // sehingga tidak pernah ikut tercentang oleh "Tandai semua dibaca".
+                    if ($submittedAt->greaterThan(now())) {
+                        $submittedAt = now()->subMinutes(rand(1, 120));
+                    }
+
                     $submission = Submission::factory()->create([
                         'assignment_id' => $assignment->id,
                         'user_id'       => $student->id,
