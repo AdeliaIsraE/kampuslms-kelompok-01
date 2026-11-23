@@ -24,6 +24,7 @@
 
     {{-- Style dipisah ke resources/css/ dan dimuat lewat Vite --}}
     @vite([
+        'resources/js/app.js',
         'resources/css/components/layout.css',
         'resources/css/components/dashboard.css',
         'resources/css/dashboard/admin.css',
