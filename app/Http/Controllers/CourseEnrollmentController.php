@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\User;
 use App\Support\AdminDashboardCache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -19,7 +20,7 @@ class CourseEnrollmentController extends Controller
         Gate::authorize('manageEnrollment', $mata_kuliah);
 
         $data = $request->validate([
-            'student_ids'   => ['required', 'array', 'min:1'],
+            'student_ids' => ['required', 'array', 'min:1', 'max:50'],
             'student_ids.*' => [
                 'integer',
                 'distinct',
@@ -28,6 +29,7 @@ class CourseEnrollmentController extends Controller
         ], [
             'student_ids.required'   => 'Pilih minimal satu mahasiswa.',
             'student_ids.min'        => 'Pilih minimal satu mahasiswa.',
+            'student_ids.max' => 'Maksimal 50 mahasiswa dapat dipilih sekaligus.',
             'student_ids.*.exists'   => 'Ada mahasiswa yang dipilih tidak ditemukan di sistem.',
             'student_ids.*.integer'  => 'Data mahasiswa tidak valid.',
             'student_ids.*.distinct' => 'Ada mahasiswa yang dipilih lebih dari sekali.',
@@ -64,12 +66,14 @@ class CourseEnrollmentController extends Controller
      * DELETE /{admin|dosen}/mata-kuliah/{mata_kuliah}/mahasiswa/{student}
      * Mengeluarkan satu mahasiswa dari mata kuliah.
      */
-    public function destroy(Request $request, Course $mata_kuliah, int $student)
+    public function destroy(Request $request, Course $mata_kuliah, User $student)
     {
         Gate::authorize('manageEnrollment', $mata_kuliah);
 
+        abort_unless($student->role === 'mahasiswa', 404);
+
         // detach() mengembalikan jumlah baris pivot yang terhapus.
-        $removed = $mata_kuliah->students()->detach($student);
+        $removed = $mata_kuliah->students()->detach($student->id);  
 
         if ($removed > 0) {
             // Hapus cache karena jumlah mahasiswa pada mata kuliah berubah.
