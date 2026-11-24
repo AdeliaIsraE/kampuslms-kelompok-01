@@ -177,26 +177,6 @@
                             </button>
                         </form>
 
-                        {{-- Pencarian otomatis saat pengguna mengetik --}}
-                        <script>
-                            (function () {
-                                const searchInput = document.getElementById('mk-student-filter');
-                                const searchForm = document.getElementById('mk-student-search-form');
-
-                                if (!searchInput || !searchForm) return;
-
-                                let searchTimeout;
-
-                                searchInput.addEventListener('input', function () {
-                                    clearTimeout(searchTimeout);
-
-                                    searchTimeout = setTimeout(function () {
-                                        searchForm.requestSubmit();
-                                    }, 400);
-                                });
-                            })();
-                        </script>
-
                         @if ($available->isEmpty())
                             @if (request()->filled('q'))
                                 <p class="mk-desc-text">Mahasiswa yang dicari tidak ditemukan.</p>
@@ -213,7 +193,12 @@
                             >
                                 @csrf
 
-                                <div class="mk-student-picker" id="mk-student-picker">
+                                <div
+                                    class="mk-student-picker"
+                                    id="mk-student-picker"
+                                    data-course-id="{{ $mataKuliah->id }}"
+                                    data-old-selected="{{ json_encode(array_map('strval', (array) old('student_ids', []))) }}"
+                                   >
                                     @foreach ($available as $s)
                                         <label class="mk-student-option">
                                             <input
@@ -279,72 +264,6 @@
                                 </div>
                             </form>
 
-                            {{-- JavaScript penyimpanan pilihan --}}
-                            <script>
-                                (function () {
-                                    const picker = document.getElementById('mk-student-picker');
-                                    const enrollForm = document.getElementById('mk-enroll-form');
-                                    const searchForm = document.getElementById('mk-student-search-form');
-
-                                    if (!picker || !enrollForm || !searchForm) return;
-
-                                    const storageKey = 'selected-students-{{ $mataKuliah->id }}';
-
-                                    let selectedIds = new Set(
-                                        JSON.parse(sessionStorage.getItem(storageKey) || '[]').map(String)
-                                    );
-
-                                    // Gabungkan dengan pilihan lama jika validasi gagal
-                                    const oldSelectedIds = @json(
-                                        array_map('strval', (array) old('student_ids', []))
-                                    );
-
-                                    oldSelectedIds.forEach(id => selectedIds.add(id));
-
-                                    function saveSelectedIds() {
-                                        sessionStorage.setItem(
-                                            storageKey,
-                                            JSON.stringify([...selectedIds])
-                                        );
-                                    }
-
-                                    // Pulihkan pilihan checkbox ketika halaman dibuka
-                                    picker.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                                        checkbox.checked = selectedIds.has(checkbox.value);
-
-                                        checkbox.addEventListener('change', function () {
-                                            if (this.checked) {
-                                                selectedIds.add(this.value);
-                                            } else {
-                                                selectedIds.delete(this.value);
-                                            }
-
-                                            saveSelectedIds();
-                                        });
-                                    });
-
-                                    // Simpan pilihan sebelum pencarian
-                                    searchForm.addEventListener('submit', saveSelectedIds);
-
-                                    // Kirim seluruh pilihan dari semua halaman
-                                    enrollForm.addEventListener('submit', function () {
-                                        picker.querySelectorAll('input[type="checkbox"]:checked')
-                                            .forEach(checkbox => selectedIds.add(checkbox.value));
-
-                                        selectedIds.forEach(id => {
-                                            const hiddenInput = document.createElement('input');
-
-                                            hiddenInput.type = 'hidden';
-                                            hiddenInput.name = 'student_ids[]';
-                                            hiddenInput.value = id;
-
-                                            enrollForm.appendChild(hiddenInput);
-                                        });
-
-                                        sessionStorage.removeItem(storageKey);
-                                    });
-                                })();
-                            </script>
                         @endif
                     @endif
                 </section>
