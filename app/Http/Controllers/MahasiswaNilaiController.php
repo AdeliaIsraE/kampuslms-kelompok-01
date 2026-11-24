@@ -96,7 +96,10 @@ class MahasiswaNilaiController extends Controller
             ->leftJoin('submissions as s', function ($join) use ($userId) {
                 $join->on('s.assignment_id', '=', 'a.id')->where('s.user_id', '=', $userId);
             })
-            ->leftJoin('grades as g', 'g.submission_id', '=', 's.id')
+            ->leftJoin('grades as g', function ($join) {
+                // Hanya nilai yang sudah diterbitkan dosen yang boleh terlihat mahasiswa.
+                $join->on('g.submission_id', '=', 's.id')->where('g.is_published', '=', true);
+            })
             ->whereIn('a.course_id', $courseIds)
             ->where('a.status', 'published')
             ->orderBy('a.due_at')
