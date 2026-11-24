@@ -71,3 +71,29 @@ Daftar IDOR pada bagian ini juga telah diperbarui dengan menambahkan beberapa ro
 |-------|-------------------|--------|
 | `admin/mata-kuliah`, `dosen/mata-kuliah`, `mahasiswa/mata-kuliah` | `CourseController::index()` menggunakan `Course::query()->visibleTo($request->user())`. Scope `visibleTo()` membatasi data berdasarkan role di level query database. | Sudah diterapkan. Data mata kuliah yang ditampilkan sudah disesuaikan dengan hak akses masing-masing role. |
 | `admin/users` | Middleware `auth` dan `role:admin` membatasi akses halaman daftar pengguna. `UserController::index()` menggunakan query `User::query()` dengan filter pencarian dan role opsional. | Sudah diterapkan. Hanya admin yang dapat membuka halaman daftar pengguna, dan seluruh admin dapat melihat semua akun sesuai kebutuhan sistem, dengan pilihan filter berdasarkan pencarian atau role. |
+
+
+## Dokumentasi Bukti Pengujian
+
+Tabel berikut berisi daftar pengujian keamanan yang telah dijalankan pada aplikasi KampusLMS beserta lokasi file pengujian dan bukti screenshot hasil pengujian.
+
+| No. | Aspek Pengujian | Nama File Test | Bukti Screenshot |
+|-----|-----------------|----------------|------------------|
+| 1 | Autentikasi dan login | `tests/Feature/AuthTest.php` | <img src="image/testaut.png"> |
+| 2 | Pengelolaan mata kuliah | `tests/Feature/CourseTest.php` | <img src="image/testmatkul.png"> |
+| 3 | Pendaftaran mahasiswa | `tests/Feature/EnrollmentTest.php` | <img src="image/testpen.png"> |
+| 4 | Pengelolaan tugas | `tests/Feature/AssignmentTest.php` | <img src="image/testtugas.png"> |
+| 5 | Pengelolaan materi | `tests/Feature/MaterialTest.php` | <img src="image/testmaterial.png"> |
+| 6 | Pengumpulan tugas | `tests/Feature/SubmissionTest.php` | <img src="image/testkumpul.png"> |
+| 7 | Pengelolaan nilai | `tests/Feature/GradeTest.php` | <img src="image/testnilai.png"> |
+| 8 | Notifikasi | `tests/Feature/NotifikasiTest.php` | <img src="image/testnotif.png"> |
+
+### Hasil Pengujian
+
+Pengujian dilakukan menggunakan perintah `php artisan test` dengan hasil:
+
+- Total pengujian: 51 test.
+- Berhasil: 51 test.
+- Gagal: 0 test.
+- Assertions: 124.
+- Status: Semua pengujian berhasil dijalankan.
