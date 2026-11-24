@@ -55,3 +55,21 @@ Masalah terjadi karena Queue Worker belum dikonfigurasi agar berjalan secara oto
 **Pengujian Setelah Perbaikan:**
 
 Pengujian dilakukan dengan memastikan Supervisor dan Queue Worker berjalan, kemudian melakukan aktivitas yang menghasilkan notifikasi. Selanjutnya, halaman admin diperiksa untuk memastikan notifikasi berhasil diproses dan ditampilkan.
+
+## 4. Nilai yang Belum Terbit Muncul di Rekap Mahasiswa
+
+**Gejala:**
+
+Nilai yang belum diterbitkan oleh dosen sudah tampil di halaman Rekap Nilai mahasiswa, lengkap dengan skor dan catatan feedback-nya.
+
+**Cara Menemukan Penyebab:**
+
+Masalah ditemukan saat menjalankan `php artisan test`. Dari 51 pengujian, satu gagal, yaitu pengujian "nilai yang belum terbit tidak tampil di rekap mahasiswa" pada `GradeTest`. Pengujian ini membuat nilai berstatus belum terbit dengan catatan rahasia, lalu membuka halaman `mahasiswa/nilai` sebagai pemilik pengumpulan. Hasilnya, catatan tersebut masih tampil di halaman, padahal seharusnya tidak. Halaman yang sama juga menampilkan skor 87/100 dan IP Sementara dari tugas yang nilainya belum terbit. Ini menunjukkan data nilai belum disaring berdasarkan status terbit.
+
+**Penyebab dan Perbaikan:**
+
+Masalah terjadi karena pengambilan data untuk rekap nilai mahasiswa tidak memeriksa status terbit pada nilai. Akibatnya, nilai yang masih berupa draf ikut dihitung dan ditampilkan. Untuk mengatasinya, pengambilan data rekap diperbaiki agar hanya memuat nilai yang sudah diterbitkan. Dengan begitu skor, catatan feedback, dan perhitungan IP Sementara hanya berasal dari nilai yang memang sudah dirilis dosen.
+
+**Pengujian Setelah Perbaikan:**
+
+Pengujian dilakukan dengan menjalankan kembali `php artisan test`, khususnya `GradeTest`. Pengujian "nilai yang belum terbit tidak tampil di rekap mahasiswa" harus lolos, dan pengujian "nilai yang sudah terbit tampil di rekap mahasiswa" harus tetap lolos. Hasil ini memastikan nilai draf tersembunyi dari mahasiswa, sedangkan nilai yang sudah terbit tetap tampil normal.
